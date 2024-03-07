@@ -12,7 +12,8 @@ class ProductManager {
             const data = fs.readFileSync(this.filePath, 'utf8');
             this.products = JSON.parse(data);
         } catch (error) {
-            console.log('Error loading products:', error);
+            console.error('Error loading products:', error);
+            throw new Error('Unable to load products');
         }
     }
 
@@ -21,12 +22,16 @@ class ProductManager {
             fs.writeFileSync(this.filePath, JSON.stringify(this.products, null, 2));
             console.log('Products saved successfully.');
         } catch (error) {
-            console.log('Error saving products:', error);
+            console.error('Error saving products:', error);
+            throw new Error('Unable to save products');
         }
     }
 
     addProduct(product) {
-        product.id = this.products.length + 1; // Autoincrementando el id
+        if (!product || typeof product !== 'object') {
+            throw new Error('Invalid product data');
+        }
+        product.id = this.products.length + 1; 
         this.products.push(product);
         this.saveProducts();
     }
