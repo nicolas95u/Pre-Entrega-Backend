@@ -1,4 +1,5 @@
 const express = require("express");
+const socketIo = require('socket.io'); 
 const ProductManager = require("../ProductManager");
 const productManager = new ProductManager("products.json");
 const { validateNumber } = require("../utils/validator/number.utils");
@@ -23,11 +24,11 @@ const {
 const router = express.Router();
 
 router.post(
-  "/",
-  validateStringFields(["title", "description", "code", "category"]),
-  validateNumberFields(["price", "stock"]),
-  validateTrueField("status"),
-  validateArrayOfStringsField("thumbnails"),
+  '/',
+  validateStringFields(['title', 'description', 'code', 'category']),
+  validateNumberFields(['price', 'stock']),
+  validateTrueField('status'),
+  validateArrayOfStringsField('thumbnails'),
   (req, res) => {
     const {
       title,
@@ -40,7 +41,7 @@ router.post(
       thumbnails,
     } = req.body;
 
-    productManager.addProduct({
+    const newProduct = {
       title,
       description,
       code,
@@ -49,9 +50,27 @@ router.post(
       stock,
       category,
       thumbnails,
-    });
-    res.status(201).json({ message: "Producto creado correctamente :)" });
-    return;
+    };
+
+    io.emit('createProduct', newProduct);
+
+    productManager.addProduct(newProduct);
+
+    res.status(201).json({ message: 'Producto creado correctamente :)' });
+  }
+);
+
+router.post(
+  '/:pid/reviews',
+  validateNumberFields(['rating']),
+  validateStringFields(['comment']),
+  (req, res) => {
+    const { pid } = req.params;
+    const { rating, comment } = req.body;
+
+    // Aquí iría la lógica para agregar la revisión al producto con ID pid
+
+    res.status(201).json({ message: 'Revisión creada correctamente :)' });
   }
 );
 
