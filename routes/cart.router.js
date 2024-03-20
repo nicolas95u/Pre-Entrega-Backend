@@ -1,20 +1,14 @@
 const express = require("express");
 const CartManager = require("../CartManager");
 const cartManager = new CartManager("carrito.json");
-const {
-  validateArrayOfProducts,
-} = require("../middlewares/validation/array.middleware");
 const router = express.Router();
 
-router.post("/", validateArrayOfProducts("products"), async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { products } = req.body;
-
-    cartManager.addCart(products);
-
+    cartManager.addCart([]); 
     res.status(201).json({ message: "Carrito creado correctamente" });
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener productos" });
+    res.status(500).json({ error: "Error al crear el carrito" });
   }
 });
 
@@ -25,22 +19,18 @@ router.get("/:cid", async (req, res) => {
 
     res.status(200).json(cart);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener productos" });
+    res.status(500).json({ error: "Error al obtener el carrito" });
   }
 });
 
-router.post(
-  "/:cid/product/:pid",
-  validateArrayOfProducts("products"),
-  async (req, res) => {
-    try {
-      const { cid, pid } = req.params;
-      cartManager.addProduct(parseInt(cid), parseInt(pid));
-      res.status(201).json({ message: "Carrito creado correctamente" });
-    } catch (error) {
-      res.status(500).json({ error: "Error al obtener productos" });
-    }
+router.post("/:cid/product/:pid", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    cartManager.addProduct(parseInt(cid), parseInt(pid));
+    res.status(201).json({ message: "Producto añadido al carrito correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al añadir el producto al carrito" });
   }
-);
+});
 
 module.exports = router;
