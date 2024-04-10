@@ -55,7 +55,8 @@ class ProductManager {
   }
 
   deleteProduct(id) {
-    const index = this.products.findIndex((product) => product.id === id);
+    const index = this.products.findIndex((product) => product.id == id);
+    console.log(index);
     if (index !== -1) {
       this.products.splice(index, 1);
       this.saveProducts();
