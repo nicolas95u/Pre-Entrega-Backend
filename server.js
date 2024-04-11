@@ -4,14 +4,14 @@ const socketIo = require("socket.io");
 const exphbs = require("express-handlebars");
 const productRouter = require("./routes/product.router");
 const cartRouter = require("./routes/cart.router");
-const ProductManager = require("./ProductManager");
+const ProductManager = require("./dao/mongoDb/ProductManager"); // chequear
 const mongoose = require('mongoose');
 
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-const productManager = new ProductManager("products.json");
+const productManager = new ProductManager(); // chequear
 
 const PORT = 8080;
 app.use(express.json());
@@ -59,11 +59,67 @@ io.on("connection", (socket) => {
   });
 });
 
-mongoose.connect('mongodb+srv://nicolas95u:<XRxK5mr9G9Q0OZxV>@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+
+
+mongoose.connect('mongodb+srv://nicolas95u:coder1234@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+
 });
 
 server.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
+
+
+
+
+// chequear 
+if (false) {
+
+  const fs = require("fs");
+  const Product = require("./dao/models/products");
+  const Cart = require("./dao/models/carts");
+  
+  fs.readFile('./products.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+  
+    // Parsear los datos a un objeto JavaScript
+    const products = JSON.parse(data);
+  
+  
+  
+    // Insertar los datos en la base de datos
+    Product.insertMany(products)
+    .then(docs => {
+      console.log('Data inserted successfully:', docs);
+    })
+    .catch(err => {
+      console.error('Error inserting data:', err);
+    });
+  });
+  
+  
+  fs.readFile('./carts.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+  
+    // Parsear los datos a un objeto JavaScript
+    const carts = JSON.parse(data);
+  
+    // Insertar los datos en la base de datos
+    Cart.insertMany(carts)
+    .then(docs => {
+      console.log('Data inserted successfully:', docs);
+    })
+    .catch(err => {
+      console.error('Error inserting data:', err);
+    });
+  }
+  );
+  
+  // Path: dao/mongoDb/ProductManager.js
+}

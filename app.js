@@ -1,10 +1,10 @@
 const express = require('express');
-const ProductManager = require('./ProductManager');
+const ProductManager = require('/dao/mongoDb/ProductManager');
 
 const app = express();
 const PORT = 3000;
 
-const productManager = new ProductManager('./products.json');
+const productManager = new ProductManager(); // chequear
 
 
 const errorHandler = (res, error) => {

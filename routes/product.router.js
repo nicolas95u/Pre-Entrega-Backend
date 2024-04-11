@@ -1,7 +1,7 @@
 const express = require("express");
 const socketIo = require('socket.io'); 
-const ProductManager = require("../ProductManager");
-const productManager = new ProductManager("products.json");
+const ProductManager = require("../dao/mongoDb/ProductManager");
+const productManager = new ProductManager(); // chequear
 const { validateNumber } = require("../utils/validator/number.utils");
 const { validateString } = require("../utils/validator/string.utils");
 const { validateArrayOfStrings } = require("../utils/validator/array.utils");

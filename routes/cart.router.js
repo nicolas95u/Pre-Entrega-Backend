@@ -1,6 +1,6 @@
 const express = require("express");
-const CartManager = require("../CartManager");
-const cartManager = new CartManager("carrito.json");
+const CartManager = require("../dao/mongoDb/CartManager");
+const cartManager = new CartManager(); // chequear
 const router = express.Router();
 
 router.post("/", async (req, res) => {
