@@ -18,12 +18,21 @@ class ProductManager {
     return await Product.findById(id);
   }
 
+  async getProductDescription(id) {
+    const product = await Product.findById(id);
+    if (product) {
+      return product.description;
+    }
+    return null;
+  }
+
   async updateProduct(id, newData) {
-    await Product.findByIdAndUpdate(id, newData); // chequear
+    await Product.findByIdAndUpdate(id, newData);
   }
 
   async deleteProduct(id) {
-    await Product.findByIdAndDelete(id); // chequear
+    await Product.findByIdAndDelete(id);
   }
 }
+
 module.exports = ProductManager;

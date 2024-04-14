@@ -1,7 +1,7 @@
 const express = require("express");
-const socketIo = require('socket.io'); 
+const router = express.Router();
 const ProductManager = require("../dao/mongoDb/ProductManager");
-const productManager = new ProductManager(); // chequear
+const productManager = new ProductManager();
 const { validateNumber } = require("../utils/validator/number.utils");
 const { validateString } = require("../utils/validator/string.utils");
 const { validateArrayOfStrings } = require("../utils/validator/array.utils");
@@ -21,8 +21,7 @@ const {
   validateArrayOfStringsField,
 } = require("../middlewares/validation/array.middleware");
 
-const router = express.Router();
-
+// POST '/': Crea un nuevo producto
 router.post(
   '/',
   validateStringFields(['title', 'description', 'code', 'category']),
@@ -60,6 +59,7 @@ router.post(
   }
 );
 
+// POST '/:pid/reviews': Agrega una revisión a un producto
 router.post(
   '/:pid/reviews',
   validateNumberFields(['rating']),
@@ -68,12 +68,13 @@ router.post(
     const { pid } = req.params;
     const { rating, comment } = req.body;
 
-    // Aquí iría la lógica para agregar la revisión al producto con ID pid
+    // Lógica para agregar la revisión al producto con ID pid
 
     res.status(201).json({ message: 'Revisión creada correctamente :)' });
   }
 );
 
+// GET '/': Obtiene todos los productos o los limita según el parámetro de consulta
 router.get("/", async (req, res) => {
   try {
     const limit = req.query.limit;
@@ -90,6 +91,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET '/:pid': Obtiene un producto por su ID
 router.get("/:pid", async (req, res) => {
   try {
     const productId = parseInt(req.params.pid);
@@ -105,6 +107,7 @@ router.get("/:pid", async (req, res) => {
   }
 });
 
+// PUT '/:pid': Actualiza un producto por su ID
 router.put("/:pid", async (req, res) => {
   try {
     const {
@@ -158,6 +161,7 @@ router.put("/:pid", async (req, res) => {
   }
 });
 
+// DELETE '/:pid': Elimina un producto por su ID
 router.delete("/:pid", async (req, res) => {
   try {
     const productId = parseInt(req.params.pid);
@@ -170,6 +174,58 @@ router.delete("/:pid", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Error al obtener producto" });
+  }
+});
+
+// GET '/:pid/description': Obtiene la descripción completa de un producto por su ID
+router.get("/:pid/description", async (req, res) => {
+  try {
+    const productId = parseInt(req.params.pid);
+    const product = await productManager.getProductDescription(productId);
+
+    if (product) {
+      res.json({ description: product.description });
+    } else {
+      res.status(404).json({ error: "Producto no encontrado" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener la descripción del producto" });
+  }
+});
+
+
+// GET '/products': Obtiene todos los productos con paginación, ordenamiento y filtrado
+router.get("/products", async (req, res) => {
+  try {
+    const { page = 1, limit = 10, sort, category, availability } = req.query;
+    let query = {};
+
+    // Agregar lógica de filtrado por categoría y disponibilidad
+    if (category) {
+      query.category = category;
+    }
+    if (availability) {
+      query.availability = availability;
+    }
+
+    // Agregar lógica de ordenamiento por precio
+    let sortQuery = {};
+    if (sort === 'price') {
+      sortQuery.price = 1; // Orden ascendente por precio
+    } else if (sort === '-price') {
+      sortQuery.price = -1; // Orden descendente por precio
+    }
+
+    const options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      sort: sortQuery,
+    };
+
+    const products = await productManager.getProducts(query, options);
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener productos" });
   }
 });
 

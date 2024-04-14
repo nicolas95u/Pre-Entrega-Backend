@@ -36,8 +36,38 @@ class ProductManager {
     this.saveProducts();
   }
 
-  getProducts() {
-    return this.products;
+  getProducts(limit = 10, page = 1, sort = 'asc', query = '') {
+    let filteredProducts = [...this.products];
+
+    if (query) {
+      filteredProducts = filteredProducts.filter(product => product.category === query);
+    }
+
+    if (sort === 'asc') {
+      filteredProducts.sort((a, b) => a.price - b.price);
+    } else if (sort === 'desc') {
+      filteredProducts.sort((a, b) => b.price - a.price);
+    }
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+    const totalPages = Math.ceil(filteredProducts.length / limit);
+    const prevPage = page > 1 ? page - 1 : null;
+    const nextPage = page < totalPages ? page + 1 : null;
+
+    return {
+      products: paginatedProducts,
+      totalPages,
+      prevPage,
+      nextPage,
+      page,
+      hasPrevPage: prevPage !== null,
+      hasNextPage: nextPage !== null,
+      prevLink: prevPage ? `/productos?limit=${limit}&page=${prevPage}&sort=${sort}&query=${query}` : null,
+      nextLink: nextPage ? `/productos?limit=${limit}&page=${nextPage}&sort=${sort}&query=${query}` : null,
+    };
   }
 
   getProductById(id) {
@@ -56,7 +86,6 @@ class ProductManager {
 
   deleteProduct(id) {
     const index = this.products.findIndex((product) => product.id == id);
-    console.log(index);
     if (index !== -1) {
       this.products.splice(index, 1);
       this.saveProducts();
