@@ -30,18 +30,20 @@ class CartManager {
     }
   }
 
-  async addProduct(cid, pid) {
+  async addProductToCart(cartId, productId) {
     try {
-      const cart = await Cart.findById(cid);
+      const cart = await Cart.findById(cartId);
       if (!cart) {
         throw new Error("Carrito no encontrado");
       }
 
-      const productIndex = cart.products.findIndex((product) => product.product === pid);
-      if (productIndex !== -1) {
-        cart.products[productIndex].quantity++;
+      // Verificar si el producto ya está en el carrito
+      const existingProduct = cart.products.find((product) => product.product.equals(productId));
+
+      if (existingProduct) {
+        existingProduct.quantity++;
       } else {
-        cart.products.push({ product: pid, quantity: 1 });
+        cart.products.push({ product: productId, quantity: 1 });
       }
 
       await cart.save();

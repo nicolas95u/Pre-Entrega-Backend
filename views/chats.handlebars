@@ -1,18 +1,43 @@
-<html>
+ <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Chat</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
 </head>
 <body>
-    <div id="chat-container">
-        {{#each messages}}
-            <div class="message">
-                <strong>{{this.user}}</strong>: {{this.message}}
-            </div>
-        {{/each}}
-    </div>
-    <form id="message-form" action="/sendMessage" method="POST">
-        <input type="text" name="message" placeholder="Escribe tu mensaje">
-        <button type="submit">Enviar</button>
-    </form>
+  <h1>Chat</h1>
+  <div id="chat-messages">
+    {{#each messages}}
+    <p>{{user}}: {{message}}</p>
+    {{/each}}
+  </div>
+  <form id="message-form">
+    <input type="text" id="user" placeholder="Your Email">
+    <input type="text" id="message" placeholder="Your Message">
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#message-form').submit(function(event) {
+        event.preventDefault();
+        const user = $('#user').val();
+        const message = $('#message').val();
+        $.ajax({
+          type: 'POST',
+          url: '/messages',
+          data: { user: user, message: message },
+          success: function(response) {
+            console.log('Message sent successfully');
+          },
+          error: function(error) {
+            console.error('Error sending message:', error);
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

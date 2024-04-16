@@ -1,8 +1,7 @@
 const express = require("express");
 const CartManager = require("../dao/mongoDb/CartManager");
-const Product = require("../models/products"); // Importar el modelo de productos
-const cartManager = new CartManager(); // chequear
 const router = express.Router();
+const cartManager = new CartManager();
 
 // Endpoint para actualizar la cantidad de un producto en el carrito
 router.put("/:cid/product/:pid", async (req, res) => {
@@ -15,6 +14,18 @@ router.put("/:cid/product/:pid", async (req, res) => {
     res.status(200).json({ message: "Cantidad de producto actualizada correctamente" });
   } catch (error) {
     res.status(500).json({ error: "Error al actualizar la cantidad del producto en el carrito" });
+  }
+});
+
+router.post("/create", async (req, res) => {
+  try {
+    const userId = req.userId; // Obtener ID del usuario de la solicitud
+    const cartId = await createCart(userId); // Crear el carrito
+
+    res.status(201).json({ message: "Carrito creado correctamente", cartId: cartId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al crear carrito" });
   }
 });
 
@@ -55,6 +66,20 @@ router.get("/:cid", async (req, res) => {
     res.status(200).json(cart);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener el carrito con detalles de productos" });
+  }
+});
+
+// Endpoint para eliminar un producto del carrito
+router.post("/:cid/product/:pid/delete", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+
+    // Lógica para eliminar el producto del carrito
+    await cartManager.removeProduct(parseInt(cid), parseInt(pid));
+
+    res.status(200).json({ message: "Producto eliminado del carrito correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar el producto del carrito" });
   }
 });
 
