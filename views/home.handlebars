@@ -1,37 +1,78 @@
-<h1>Listado de productos</h1>
-<ul>
-  <h1>Listado de productos</h1>
-  <ul>
-    {{#each products}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de compras</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    li:last-child {
+      border-bottom: none;
+    }
+    strong {
+      font-weight: bold;
+    }
+    .thumbnails img {
+      max-width: 100px;
+      height: auto;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Carrito de compras</h1>
+    <ul>
       <li>
-        <strong>Id:</strong>
-        {{this.id}}
-        <br />
-        <strong>Nombre:</strong>
-        {{this.title}}
-        <br />
-        <strong>Descripción:</strong>
-        {{this.description}}
-        <br />
-        <strong>Código:</strong>
-        {{this.code}}
-        <br />
-        <strong>Precio:</strong>
-        {{this.price}}
-        <br />
-        <strong>Estado:</strong>
-        {{this.status}}
-        <br />
-        <strong>Stock:</strong>
-        {{this.stock}}
-        <br />
-        <strong>Categoría:</strong>
-        {{this.category}}
-        <br />
-        <strong>Thumbnails:</strong>
-        {{this.thumbnails}}
-        <br />
+        <h2>Listado de productos</h2>
+        <ul>
+          {{#each products}}
+            <li>
+              <strong>Id:</strong> {{this.id}}<br>
+              <strong>Nombre:</strong> {{this.title}}<br>
+              <strong>Descripción:</strong> {{this.description}}<br>
+              <strong>Código:</strong> {{this.code}}<br>
+              <strong>Precio:</strong> {{this.price}}<br>
+              <strong>Estado:</strong> {{this.status}}<br>
+              <strong>Stock:</strong> {{this.stock}}<br>
+              <strong>Categoría:</strong> {{this.category}}<br>
+              <strong>Thumbnails:</strong> 
+              <div class="thumbnails">
+                {{#each this.thumbnails}}
+                  <img src="{{this}}" alt="Thumbnail">
+                {{/each}}
+              </div>
+              <br>
+            </li>
+          {{/each}}
+        </ul>
       </li>
-    {{/each}}
-  </ul>
-</ul>
+    </ul>
+  </div>
+</body>
+</html>

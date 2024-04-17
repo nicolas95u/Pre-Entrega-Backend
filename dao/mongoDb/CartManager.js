@@ -1,6 +1,26 @@
-const Cart = require("../models/carts"); // Importa el modelo de carritos definido en '../models/carts.js'
+const Cart = require("../models/carts"); // Importar el modelo de carritos
+const { validateObjectId } = require("../utils/validator/objectId.utils"); // Importar la función de validación de ObjectId
 
 class CartManager {
+  async createCart(userId) {
+    try {
+      validateObjectId([userId]); // Validar ID de usuario
+
+      const newCart = {
+        userId: userId,
+        products: [], // Considerar usar 'items' para consistencia con el esquema
+      };
+
+      const cartManager = new CartManager(); // Crear una instancia de CartManager
+      await cartManager.addCart(newCart); // Agregar el nuevo carrito
+
+      return newCart._id;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error al crear carrito");
+    }
+  }
+
   async addCart(products) {
     try {
       const cart = new Cart({ products });
