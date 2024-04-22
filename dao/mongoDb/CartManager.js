@@ -1,5 +1,5 @@
 const Cart = require("../models/carts"); // Importar el modelo de carritos
-const { validateObjectId } = require("../utils/validator/objectId.utils"); // Importar la función de validación de ObjectId
+const { validateObjectId } = require("../../utils/validator/objectId.utils"); // Importar la función de validación de ObjectId
 
 class CartManager {
   async createCart(userId) {
