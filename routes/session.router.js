@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models/user');
+const { User } = require('../dao/models/user');
 
 // Método para registrar un usuario
 router.post('/register', async (req, res) => {

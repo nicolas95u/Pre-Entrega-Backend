@@ -6,6 +6,7 @@ const productRouter = require("./routes/product.router");
 const cartRouter = require("./routes/cart.router");
 const ProductManager = require("./dao/mongoDb/ProductManager");
 const mongoose = require('mongoose');
+const sessionRouter = require ("./routes/session.router")
 
 const app = express();
 const server = http.createServer(app);
@@ -68,6 +69,7 @@ app.get("/realtimeproducts", (req, res) => {
 
 app.use("/products", productRouter);
 app.use("/cart", cartRouter);
+app.use("/session", sessionRouter)
 
 io.on("connection", (socket) => {
   console.log("A client connected");
@@ -95,6 +97,10 @@ io.on("connection", (socket) => {
     console.log("A client disconnected");
   });
 });
+
+app.get("/login", async (req, res) => {
+  res.render("login")
+})
 
 mongoose.connect('mongodb+srv://nicolas95u:coder1234@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {});
 
