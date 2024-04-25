@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const UserManager = require('../dao/user-manager');
-const isAdmin = require('../middlewares/isAdmin');
+const UserManager = require('../dao/mongoDb/UserManager');
+const isAdmin = require('../middlewares/validation/isAdmin.middleware');
 
 const userManager = new UserManager();
 
@@ -10,7 +10,7 @@ router.post('/register', async (req, res) => {
   try {
     const { firstName, lastName, email, age, password } = req.body;
     await userManager.registerUser(firstName, lastName, email, age, password);
-    res.status(200).json({ message: 'Usuario registrado exitosamente' });
+    res.redirect("/login");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al registrar usuario' });
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
     const user = await userManager.findUserByEmail(email);
     // Setear la sesión del usuario
     req.session.user = user;
-    res.status(200).json({ message: 'Login exitoso', user: req.session.user });
+    res.redirect("/");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al iniciar sesión' });

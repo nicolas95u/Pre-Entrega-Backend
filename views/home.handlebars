@@ -45,25 +45,34 @@
   </style>
 </head>
 <body>
+  
   <div class="container">
     <h1>Carrito de compras</h1>
+    <!-- Datos del usuario -->
+    <div>
+      <p>Nombre: {{ user.firstName }} {{ user.lastName }}</p>
+      <p>Email: {{ user.email }}</p>
+      <p>Edad: {{ user.age }}</p>
+      <!-- Botón de logout -->
+      <button id="logoutButton">Logout</button>
+    </div>
     <ul>
       <li>
         <h2>Listado de productos</h2>
         <ul>
           {{#each products}}
             <li>
-              <strong>Id:</strong> {{this.id}}<br>
-              <strong>Nombre:</strong> {{this.title}}<br>
-              <strong>Descripción:</strong> {{this.description}}<br>
-              <strong>Código:</strong> {{this.code}}<br>
-              <strong>Precio:</strong> {{this.price}}<br>
-              <strong>Estado:</strong> {{this.status}}<br>
-              <strong>Stock:</strong> {{this.stock}}<br>
-              <strong>Categoría:</strong> {{this.category}}<br>
+              <strong>Id:</strong> {{_id}}<br>
+              <strong>Nombre:</strong> {{title}}<br>
+              <strong>Descripción:</strong> {{description}}<br>
+              <strong>Código:</strong> {{code}}<br>
+              <strong>Precio:</strong> {{price}}<br>
+              <strong>Estado:</strong> {{status}}<br>
+              <strong>Stock:</strong> {{stock}}<br>
+              <strong>Categoría:</strong> {{category}}<br>
               <strong>Thumbnails:</strong> 
               <div class="thumbnails">
-                {{#each this.thumbnails}}
+                {{#each thumbnails}}
                   <img src="{{this}}" alt="Thumbnail">
                 {{/each}}
               </div>
@@ -74,5 +83,28 @@
       </li>
     </ul>
   </div>
+
+  <!-- Script para el logout -->
+  <script>
+  document.getElementById('logoutButton').addEventListener('click', function() {
+  console.log('Botón de logout clickeado');
+  fetch('/session/logout', {
+    method: 'GET',
+    credentials: 'same-origin'
+  })
+  .then(response => {
+    console.log(response); // Agregar este console.log para ver la respuesta
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+    if (data.message === 'Sesión cerrada correctamente') {
+      window.location.href = '/'; // Redirigir a la vista de login después del logout
+    }
+  })
+  .catch(error => console.error('Error:', error));
+});
+
+  </script>
 </body>
 </html>

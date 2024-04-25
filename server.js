@@ -4,9 +4,10 @@ const socketIo = require("socket.io");
 const exphbs = require("express-handlebars");
 const productRouter = require("./routes/product.router");
 const cartRouter = require("./routes/cart.router");
+const sessionRouter = require("./routes/session.router"); // Corrección en la importación
 const ProductManager = require("./dao/mongoDb/ProductManager");
 const mongoose = require('mongoose');
-const sessionRouter = require ("./routes/session.router")
+const session = require('express-session');
 
 const app = express();
 const server = http.createServer(app);
@@ -14,10 +15,16 @@ const io = socketIo(server);
 const productManager = new ProductManager(); 
 
 const PORT = 8080;
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./views");
+app.use(session({
+  secret: 'secreto', 
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Cambios en la ruta '/' para implementar paginación y ordenamiento
 app.get("/", async (req, res) => {
@@ -28,26 +35,25 @@ app.get("/", async (req, res) => {
 
     // Lógica para obtener productos según los parámetros de consulta
     let products = await productManager.getProducts();
-
     // Aplicar ordenamiento por precio si se proporciona sort
     if (sort === 'asc') {
       products.sort((a, b) => a.price - b.price);
     } else if (sort === 'desc') {
       products.sort((a, b) => b.price - a.price);
     }
-
+    
     // Calcular índices de inicio y fin para la paginación
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-
+    
     // Obtener los productos de la página actual
     const paginatedProducts = products.slice(startIndex, endIndex);
-
+    
     // Calcular el total de páginas
     const totalPages = Math.ceil(products.length / limit);
-
+    
     res.render("home", {
-      products: paginatedProducts,
+      products, 
       totalPages,
       page,
       prevPage: page > 1 ? page - 1 : null,
@@ -56,6 +62,7 @@ app.get("/", async (req, res) => {
       hasNextPage: page < totalPages,
       prevLink: page > 1 ? `/products?page=${page - 1}&limit=${limit}&sort=${sort}` : null,
       nextLink: page < totalPages ? `/products?page=${page + 1}&limit=${limit}&sort=${sort}` : null,
+      user: req.session.user // Pasar el usuario a la vista
     });
   } catch (error) {
     res.status(500).json({ error: "Error al obtener productos" });
@@ -69,7 +76,7 @@ app.get("/realtimeproducts", (req, res) => {
 
 app.use("/products", productRouter);
 app.use("/cart", cartRouter);
-app.use("/session", sessionRouter)
+app.use("/session", sessionRouter);
 
 io.on("connection", (socket) => {
   console.log("A client connected");
@@ -99,8 +106,16 @@ io.on("connection", (socket) => {
 });
 
 app.get("/login", async (req, res) => {
-  res.render("login")
-})
+  res.render("login");
+});
+
+app.get("/register", async (req, res) => {
+  res.render("register");
+});
+
+app.get("/profile", async (req, res) => {
+  res.render("profile");
+});
 
 mongoose.connect('mongodb+srv://nicolas95u:coder1234@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {});
 

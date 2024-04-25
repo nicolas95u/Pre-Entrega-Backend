@@ -3,11 +3,13 @@ const User = require('../models/user');
 class UserManager {
   async registerUser(firstName, lastName, email, age, password) {
     try {
+      
       const newUser = new User({ firstName, lastName, email, age, password });
+      
       await newUser.save();
       return newUser;
     } catch (error) {
-      throw new Error('Error registering user');
+      throw new Error(error.message);
     }
   }
 
