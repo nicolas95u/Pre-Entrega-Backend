@@ -87,24 +87,19 @@
   <!-- Script para el logout -->
   <script>
   document.getElementById('logoutButton').addEventListener('click', function() {
-  console.log('Botón de logout clickeado');
-  fetch('/session/logout', {
-    method: 'GET',
-    credentials: 'same-origin'
-  })
-  .then(response => {
-    console.log(response); // Agregar este console.log para ver la respuesta
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-    if (data.message === 'Sesión cerrada correctamente') {
-      window.location.href = '/'; // Redirigir a la vista de login después del logout
-    }
-  })
-  .catch(error => console.error('Error:', error));
-});
+    fetch('/session/logout', {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'Sesión cerrada correctamente') {
+        window.location.href = '/login'; // Redirigir a la vista de login después del logout
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
+</script>
 
-  </script>
 </body>
 </html>
