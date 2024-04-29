@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const UserManager = require('../dao/mongoDb/UserManager');
 const isAdmin = require('../middlewares/validation/isAdmin.middleware');
-
+const { createHash } = require('../utils/validator/authentication.utils');
+const passport=require ("passport")
 const userManager = new UserManager();
 
 // Método para registrar un usuario
-router.post('/register', async (req, res) => {
+router.post('/register', passport.authenticate('register', { failureRedirect: '/failregister' }), async (req, res) => {
   try {
-    const { firstName, lastName, email, age, password } = req.body;
-    await userManager.registerUser(firstName, lastName, email, age, password);
+  
     res.redirect("/login");
   } catch (error) {
     console.error(error);
@@ -17,23 +17,32 @@ router.post('/register', async (req, res) => {
   }
 });
 
+
+router.get('/failregister', async (req, res) => {
+  console.log("Failed Strategy!");
+  res.send({ error: "Failed" })
+})
+
 // Método para realizar el login
-router.post('/login', async (req, res) => {
+router.post('/login', passport.authenticate('login', { failureRedirect: '/faillogin' }), async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const isValidCredentials = await userManager.verifyCredentials(email, password);
-    if (!isValidCredentials) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+    if (!req.user) return res.status(400).send({ status: "error", error: "Invalid credentials" })
+    req.session.user = {
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      age: req.user.age,
+      email: req.user.email
     }
-    const user = await userManager.findUserByEmail(email);
-    // Setear la sesión del usuario
-    req.session.user = user;
     res.redirect("/");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al iniciar sesión' });
   }
 });
+
+router.get('/faillogin', (req, res) => {
+  res.send({ error: "Failed Login" })
+})
 
 // Ruta protegida para administradores
 router.get('/adminOnlyRoute', isAdmin, (req, res) => {

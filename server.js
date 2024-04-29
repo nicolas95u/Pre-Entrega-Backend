@@ -8,6 +8,9 @@ const sessionRouter = require("./routes/session.router"); // Corrección en la i
 const ProductManager = require("./dao/mongoDb/ProductManager");
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const {initializePassport} = require ("./config/passport.config")
+const passport = require ("passport");
 
 const app = express();
 const server = http.createServer(app);
@@ -20,12 +23,21 @@ app.use(express.json());
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./views");
-app.use(session({
-  secret: 'secreto', 
-  resave: false,
-  saveUninitialized: true
-}));
 
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: 'mongodb+srv://nicolas95u:coder1234@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', // Completa URL de conexión
+  
+    ttl: 30
+  }),
+  secret: 'asdasdasdasd',
+  resave: false,
+  saveUninitialized: false
+}))
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 // Cambios en la ruta '/' para implementar paginación y ordenamiento
 app.get("/", async (req, res) => {
   try {
