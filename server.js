@@ -9,13 +9,13 @@ const ProductManager = require("./dao/mongoDb/ProductManager");
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const {initializePassport} = require ("./config/passport.config")
-const passport = require ("passport");
+const { initializePassport } = require("./config/passport.config");
+const passport = require("passport");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-const productManager = new ProductManager(); 
+const productManager = new ProductManager();
 
 const PORT = 8080;
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +27,7 @@ app.set("views", "./views");
 app.use(session({
   store: MongoStore.create({
     mongoUrl: 'mongodb+srv://nicolas95u:coder1234@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', // Completa URL de conexión
-  
+
     ttl: 30
   }),
   secret: 'asdasdasdasd',
@@ -53,19 +53,19 @@ app.get("/", async (req, res) => {
     } else if (sort === 'desc') {
       products.sort((a, b) => b.price - a.price);
     }
-    
+
     // Calcular índices de inicio y fin para la paginación
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    
+
     // Obtener los productos de la página actual
     const paginatedProducts = products.slice(startIndex, endIndex);
-    
+
     // Calcular el total de páginas
     const totalPages = Math.ceil(products.length / limit);
-    
+
     res.render("home", {
-      products, 
+      products,
       totalPages,
       page,
       prevPage: page > 1 ? page - 1 : null,
@@ -89,6 +89,14 @@ app.get("/realtimeproducts", (req, res) => {
 app.use("/products", productRouter);
 app.use("/cart", cartRouter);
 app.use("/session", sessionRouter);
+
+// Ruta para iniciar sesión con GitHub
+app.get("/github", (req, res) => {
+  res.send({
+    status: 'success',
+    message: 'Success'
+  });
+});
 
 io.on("connection", (socket) => {
   console.log("A client connected");

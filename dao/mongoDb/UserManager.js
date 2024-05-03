@@ -25,6 +25,8 @@ class UserManager {
     }
   }
 
+  
+
   async findUserById(id) {
     try {
       return await User.findOne(id);

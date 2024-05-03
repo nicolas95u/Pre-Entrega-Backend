@@ -1,12 +1,13 @@
+// session.router.js
+
 const express = require('express');
 const router = express.Router();
 const UserManager = require('../dao/mongoDb/UserManager');
 const isAdmin = require('../middlewares/validation/isAdmin.middleware');
-const { createHash } = require('../utils/validator/authentication.utils');
-const passport=require ("passport")
+const passport = require('passport');
+
 const userManager = new UserManager();
 
-// Método para registrar un usuario
 router.post('/register', passport.authenticate('register', { failureRedirect: '/failregister' }), async (req, res) => {
   try {
   
@@ -24,7 +25,7 @@ router.get('/failregister', async (req, res) => {
 })
 
 // Método para realizar el login
-router.post('/login', passport.authenticate('login', { failureRedirect: '/faillogin' }), async (req, res) => {
+router.post('/login', passport.authenticate('login', { failureRedirect: '/session/faillogin' }), async (req, res) => {
   try {
     if (!req.user) return res.status(400).send({ status: "error", error: "Invalid credentials" })
     req.session.user = {
@@ -59,6 +60,23 @@ router.get('/logout', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Error al cerrar sesión' });
   }
+});
+
+// Ruta para iniciar sesión con GitHub
+router.get("/github", passport.authenticate('github'), (req, res) => {
+    res.send({
+        status: 'success',
+        message: 'Success'
+    });
+});
+
+// Ruta de retorno de GitHub después de la autenticación
+router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+    // Guardar el usuario en la sesión
+    req.session.user = req.user;
+
+    // Redirigir a la página principal después de la autenticación
+    res.redirect('/');
 });
 
 module.exports = router;

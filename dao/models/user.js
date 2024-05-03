@@ -7,7 +7,9 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   age: { type: Number },
   password: { type: String, required: true },
-  role: { type: String, enum: ['admin', 'user'], default: 'user' } // Agregar el campo de roles
+  role: { type: String, enum: ['admin', 'user'], default: 'user' },
+  githubId: { type: String }, // Agregar campo para el ID de usuario de GitHub
+  githubAccessToken: { type: String }, // Agregar campo para el token de acceso de GitHub
 });
 
 const User = mongoose.model('User', userSchema);

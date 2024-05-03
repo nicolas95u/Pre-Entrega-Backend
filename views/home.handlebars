@@ -46,14 +46,14 @@
 </head>
 <body>
   
+  {{#if user}}
+  <!-- Contenido para usuarios autenticados -->
   <div class="container">
     <h1>Carrito de compras</h1>
-    <!-- Datos del usuario -->
     <div>
       <p>Nombre: {{ user.firstName }} {{ user.lastName }}</p>
       <p>Email: {{ user.email }}</p>
       <p>Edad: {{ user.age }}</p>
-      <!-- Botón de logout -->
       <button id="logoutButton">Logout</button>
     </div>
     <ul>
@@ -61,45 +61,53 @@
         <h2>Listado de productos</h2>
         <ul>
           {{#each products}}
-            <li>
-              <strong>Id:</strong> {{_id}}<br>
-              <strong>Nombre:</strong> {{title}}<br>
-              <strong>Descripción:</strong> {{description}}<br>
-              <strong>Código:</strong> {{code}}<br>
-              <strong>Precio:</strong> {{price}}<br>
-              <strong>Estado:</strong> {{status}}<br>
-              <strong>Stock:</strong> {{stock}}<br>
-              <strong>Categoría:</strong> {{category}}<br>
-              <strong>Thumbnails:</strong> 
-              <div class="thumbnails">
-                {{#each thumbnails}}
-                  <img src="{{this}}" alt="Thumbnail">
-                {{/each}}
-              </div>
-              <br>
-            </li>
+          <li>
+            <strong>Id:</strong> {{_id}}<br>
+            <strong>Nombre:</strong> {{title}}<br>
+            <strong>Descripción:</strong> {{description}}<br>
+            <strong>Código:</strong> {{code}}<br>
+            <strong>Precio:</strong> {{price}}<br>
+            <strong>Estado:</strong> {{status}}<br>
+            <strong>Stock:</strong> {{stock}}<br>
+            <strong>Categoría:</strong> {{category}}<br>
+            <strong>Thumbnails:</strong> 
+            <div class="thumbnails">
+              {{#each thumbnails}}
+                <img src="{{this}}" alt="Thumbnail">
+              {{/each}}
+            </div>
+            <br>
+          </li>
           {{/each}}
         </ul>
       </li>
     </ul>
   </div>
+  {{else}}
+  <!-- Contenido para usuarios no autenticados -->
+  <div class="container">
+    <h1>Bienvenido</h1>
+    <p>Inicia sesión o regístrate para acceder al carrito de compras y productos.</p>
+    <a href="/login">Iniciar sesión</a> | <a href="/register">Registrarse</a>
+  </div>
+  {{/if}}
 
   <!-- Script para el logout -->
   <script>
-  document.getElementById('logoutButton').addEventListener('click', function() {
-    fetch('/session/logout', {
-      method: 'GET',
-      credentials: 'same-origin'
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.message === 'Sesión cerrada correctamente') {
-        window.location.href = '/login'; // Redirigir a la vista de login después del logout
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  });
-</script>
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      fetch('/session/logout', {
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Sesión cerrada correctamente') {
+          window.location.href = '/login'; // Redirigir a la vista de login después del logout
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  </script>
 
 </body>
 </html>
