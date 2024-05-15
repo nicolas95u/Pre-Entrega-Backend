@@ -10,14 +10,12 @@ const userManager = new UserManager();
 
 router.post('/register', passport.authenticate('register', { failureRedirect: '/failregister' }), async (req, res) => {
   try {
-  
     res.redirect("/login");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al registrar usuario' });
   }
 });
-
 
 router.get('/failregister', async (req, res) => {
   console.log("Failed Strategy!");
@@ -63,20 +61,33 @@ router.get('/logout', async (req, res) => {
 });
 
 // Ruta para iniciar sesión con GitHub
-router.get("/github", passport.authenticate('github'), (req, res) => {
-    res.send({
-        status: 'success',
-        message: 'Success'
-    });
+router.get("/github", passport.authenticate('github', { scope: ['user:email'] }), (req, res) => {
+  res.send({
+    status: 'success',
+    message: 'Success'
+  });
 });
 
 // Ruta de retorno de GitHub después de la autenticación
-router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
+  try {
     // Guardar el usuario en la sesión
-    req.session.user = req.user;
+    req.session.user = {
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      age: req.user.age,
+      email: req.user.email,
+      // Agregar el ID de GitHub y el token de acceso
+      githubId: req.user.githubId,
+      githubAccessToken: req.user.githubAccessToken,
+    };
 
     // Redirigir a la página principal después de la autenticación
     res.redirect('/');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al autenticar con GitHub' });
+  }
 });
 
 module.exports = router;

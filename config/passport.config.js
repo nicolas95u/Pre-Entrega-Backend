@@ -1,6 +1,6 @@
 const passport = require("passport");
 const local = require("passport-local");
-const GitHubStrategy = require("passport-github2").Strategy; // Importar GitHubStrategy
+const GitHubStrategy = require("passport-github2").Strategy;
 const { createHash, isValidPassword } = require("../utils/validator/authentication.utils");
 const UserManager = require("../dao/mongoDb/UserManager");
 const userManager = new UserManager();
@@ -70,29 +70,29 @@ exports.initializePassport = () => {
     })
   );
 
-  // Iniciar la estrategia de GitHub
   const CLIENT_ID = "Iv1.2e71bcd0f250d34c";
-  const SECRET_ID = "ddcfb192c6f2730dffb9354d4b06ed2ac9bb1d84";
+  const CLIENT_SECRET = "ddcfb192c6f2730dffb9354d4b06ed2ac9bb1d84";
+  const CALLBACK_URL = "http://localhost:8080/session/githubcallback";
 
   passport.use(
     "github",
     new GitHubStrategy(
       {
         clientID: CLIENT_ID,
-        clientSecret: SECRET_ID,
-        callbackURL: "http://localhost:8080/session/githubcallback",
+        clientSecret: CLIENT_SECRET,
+        callbackURL: CALLBACK_URL,
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log(profile._json);
-          console.log (accessToken, refreshToken)
-    
-          let user = await userManager.findUserByEmail({ email: profile._json.login });
+          let user = await userManager.findUserByEmail({ email: profile._json.email });
           if (!user) {
-            
-            const fullName=profile._json.name.split(" ")
-            console.log(fullName)
-            let result = await userManager.registerUser(fullName[0], fullName[1], profile._json.email, Math.random(), accessToken); // Aquí puedes pasar los datos que tengas disponibles de GitHub
+            let result = await userManager.registerUser(
+              profile._json.firstName,
+              profile._json.lastName,
+              profile._json.email,
+              null, // Age - You can pass any value you want here
+              accessToken // Save the access token for GitHub
+            );
             done(null, result);
           } else {
             done(null, user);
