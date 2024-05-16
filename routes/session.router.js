@@ -1,3 +1,5 @@
+// session.router.js
+
 const express = require('express');
 const router = express.Router();
 const UserManager = require('../dao/mongoDb/UserManager');
@@ -8,12 +10,14 @@ const userManager = new UserManager();
 
 router.post('/register', passport.authenticate('register', { failureRedirect: '/failregister' }), async (req, res) => {
   try {
+  
     res.redirect("/login");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al registrar usuario' });
   }
 });
+
 
 router.get('/failregister', async (req, res) => {
   console.log("Failed Strategy!");
@@ -49,10 +53,6 @@ router.get('/adminOnlyRoute', isAdmin, (req, res) => {
 // Método para cerrar sesión
 router.get('/logout', async (req, res) => {
   try {
-    // Eliminar propiedades relacionadas con GitHub
-    delete req.session.user.githubId;
-    delete req.session.user.githubAccessToken;
-
     // Destruir la sesión
     req.session.destroy();
     res.status(200).json({ message: 'Sesión cerrada correctamente' });
@@ -63,33 +63,20 @@ router.get('/logout', async (req, res) => {
 });
 
 // Ruta para iniciar sesión con GitHub
-router.get("/github", passport.authenticate('github', { scope: ['user:email'] }), (req, res) => {
-  res.send({
-    status: 'success',
-    message: 'Success'
-  });
+router.get("/github", passport.authenticate('github'), (req, res) => {
+    res.send({
+        status: 'success',
+        message: 'Success'
+    });
 });
 
 // Ruta de retorno de GitHub después de la autenticación
-router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
-  try {
+router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
     // Guardar el usuario en la sesión
-    req.session.user = {
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      age: req.user.age,
-      email: req.user.email,
-      // Agregar el ID de GitHub y el token de acceso
-      githubId: req.user.githubId,
-      githubAccessToken: req.user.githubAccessToken,
-    };
+    req.session.user = req.user;
 
     // Redirigir a la página principal después de la autenticación
     res.redirect('/');
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al autenticar con GitHub' });
-  }
 });
 
 module.exports = router;
