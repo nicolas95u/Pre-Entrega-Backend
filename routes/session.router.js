@@ -1,5 +1,3 @@
-// session.router.js
-
 const express = require('express');
 const router = express.Router();
 const UserManager = require('../dao/mongoDb/UserManager');
@@ -51,6 +49,10 @@ router.get('/adminOnlyRoute', isAdmin, (req, res) => {
 // Método para cerrar sesión
 router.get('/logout', async (req, res) => {
   try {
+    // Eliminar propiedades relacionadas con GitHub
+    delete req.session.user.githubId;
+    delete req.session.user.githubAccessToken;
+
     // Destruir la sesión
     req.session.destroy();
     res.status(200).json({ message: 'Sesión cerrada correctamente' });
