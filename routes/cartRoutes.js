@@ -9,11 +9,19 @@ router.put("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
 
-    await cartManager.updateProductQuantity(parseInt(cid), parseInt(pid), parseInt(quantity));
+    await cartManager.updateProductQuantity(
+      parseInt(cid),
+      parseInt(pid),
+      parseInt(quantity)
+    );
 
-    res.status(200).json({ message: "Cantidad de producto actualizada correctamente" });
+    res
+      .status(200)
+      .json({ message: "Cantidad de producto actualizada correctamente" });
   } catch (error) {
-    res.status(500).json({ error: "Error al actualizar la cantidad del producto en el carrito" });
+    res.status(500).json({
+      error: "Error al actualizar la cantidad del producto en el carrito",
+    });
   }
 });
 
@@ -22,7 +30,9 @@ router.post("/create", async (req, res) => {
     const userId = req.userId; // Obtener ID del usuario de la solicitud
     const cartId = await createCart(userId); // Crear el carrito
 
-    res.status(201).json({ message: "Carrito creado correctamente", cartId: cartId });
+    res
+      .status(201)
+      .json({ message: "Carrito creado correctamente", cartId: cartId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error al crear carrito" });
@@ -36,9 +46,13 @@ router.delete("/:cid/product/:pid", async (req, res) => {
 
     await cartManager.removeProduct(parseInt(cid), parseInt(pid));
 
-    res.status(200).json({ message: "Producto eliminado del carrito correctamente" });
+    res
+      .status(200)
+      .json({ message: "Producto eliminado del carrito correctamente" });
   } catch (error) {
-    res.status(500).json({ error: "Error al eliminar el producto del carrito" });
+    res
+      .status(500)
+      .json({ error: "Error al eliminar el producto del carrito" });
   }
 });
 
@@ -65,21 +79,9 @@ router.get("/:cid", async (req, res) => {
 
     res.status(200).json(cart);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener el carrito con detalles de productos" });
-  }
-});
-
-// Endpoint para eliminar un producto del carrito
-router.post("/:cid/product/:pid/delete", async (req, res) => {
-  try {
-    const { cid, pid } = req.params;
-
-    // Lógica para eliminar el producto del carrito
-    await cartManager.removeProduct(parseInt(cid), parseInt(pid));
-
-    res.status(200).json({ message: "Producto eliminado del carrito correctamente" });
-  } catch (error) {
-    res.status(500).json({ error: "Error al eliminar el producto del carrito" });
+    res
+      .status(500)
+      .json({ error: "Error al obtener el carrito con detalles de productos" });
   }
 });
 

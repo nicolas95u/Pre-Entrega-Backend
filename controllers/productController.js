@@ -1,81 +1,56 @@
-const express = require("express");
-const router = express.Router();
 const ProductManager = require("../dao/mongoDb/ProductManager");
 const productManager = new ProductManager();
-const { validateNumber } = require("../utils/validator/number.utils");
-const { validateString } = require("../utils/validator/string.utils");
-const { validateArrayOfStrings } = require("../utils/validator/array.utils");
-const { validateTrue } = require("../utils/validator/boolean.utils");
-
 const {
-  validateStringFields,
-} = require("../middlewares/validation/string.middleware");
+  validateNumber,
+  validateString,
+  validateArrayOfStrings,
+} = require("../utils/validator");
 
-const {
-  validateNumberFields,
-} = require("../middlewares/validation/number.middleware");
-const {
-  validateTrueField,
-} = require("../middlewares/validation/boolean.middleware");
-const {
-  validateArrayOfStringsField,
-} = require("../middlewares/validation/array.middleware");
+exports.createProduct = async (req, res) => {
+  const {
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnails,
+  } = req.body;
 
-// POST '/': Crea un nuevo producto
-router.post(
-  '/',
-  validateStringFields(['title', 'description', 'code', 'category']),
-  validateNumberFields(['price', 'stock']),
-  validateTrueField('status'),
-  validateArrayOfStringsField('thumbnails'),
-  (req, res) => {
-    const {
-      title,
-      description,
-      code,
-      price,
-      status,
-      stock,
-      category,
-      thumbnails,
-    } = req.body;
+  const newProduct = {
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnails,
+  };
 
-    const newProduct = {
-      title,
-      description,
-      code,
-      price,
-      status,
-      stock,
-      category,
-      thumbnails,
-    };
-
-    io.emit('createProduct', newProduct);
-
-    productManager.addProduct(newProduct);
-
-    res.status(201).json({ message: 'Producto creado correctamente :)' });
+  try {
+    io.emit("createProduct", newProduct);
+    await productManager.addProduct(newProduct);
+    res.status(201).json({ message: "Producto creado correctamente :)" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al crear producto" });
   }
-);
+};
 
-// POST '/:pid/reviews': Agrega una revisión a un producto
-router.post(
-  '/:pid/reviews',
-  validateNumberFields(['rating']),
-  validateStringFields(['comment']),
-  (req, res) => {
-    const { pid } = req.params;
-    const { rating, comment } = req.body;
+exports.addReview = async (req, res) => {
+  const { pid } = req.params;
+  const { rating, comment } = req.body;
 
+  try {
     // Lógica para agregar la revisión al producto con ID pid
-
-    res.status(201).json({ message: 'Revisión creada correctamente :)' });
+    res.status(201).json({ message: "Revisión creada correctamente :)" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al crear revisión" });
   }
-);
+};
 
-// GET '/': Obtiene todos los productos o los limita según el parámetro de consulta
-router.get("/", async (req, res) => {
+exports.getAllProducts = async (req, res) => {
   try {
     const limit = req.query.limit;
     let products = await productManager.getProducts();
@@ -89,10 +64,9 @@ router.get("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error al obtener productos" });
   }
-});
+};
 
-// GET '/:pid': Obtiene un producto por su ID
-router.get("/:pid", async (req, res) => {
+exports.getProductById = async (req, res) => {
   try {
     const productId = parseInt(req.params.pid);
     const product = await productManager.getProductById(productId);
@@ -105,10 +79,9 @@ router.get("/:pid", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error al obtener producto" });
   }
-});
+};
 
-// PUT '/:pid': Actualiza un producto por su ID
-router.put("/:pid", async (req, res) => {
+exports.updateProduct = async (req, res) => {
   try {
     const {
       title,
@@ -149,7 +122,10 @@ router.put("/:pid", async (req, res) => {
       object.thumbnails = thumbnails;
     }
 
-    const productUpdated = productManager.updateProduct(parseInt(id), object);
+    const productUpdated = await productManager.updateProduct(
+      parseInt(id),
+      object
+    );
 
     if (!productUpdated) {
       res.status(404).json({ error: "Error 404: producto no encontrado" });
@@ -157,15 +133,14 @@ router.put("/:pid", async (req, res) => {
     }
     res.status(200).json({ message: "Producto editado correctamente :)" });
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener producto" });
+    res.status(500).json({ error: "Error al actualizar producto" });
   }
-});
+};
 
-// DELETE '/:pid': Elimina un producto por su ID
-router.delete("/:pid", async (req, res) => {
+exports.deleteProduct = async (req, res) => {
   try {
     const productId = parseInt(req.params.pid);
-    const product = productManager.deleteProduct(productId);
+    const product = await productManager.deleteProduct(productId);
 
     if (product) {
       res.json({ message: "Producto eliminado correctamente." });
@@ -173,12 +148,11 @@ router.delete("/:pid", async (req, res) => {
       res.status(404).json({ error: "Producto no encontrado" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener producto" });
+    res.status(500).json({ error: "Error al eliminar producto" });
   }
-});
+};
 
-// GET '/:pid/description': Obtiene la descripción completa de un producto por su ID
-router.get("/:pid/description", async (req, res) => {
+exports.getProductDescription = async (req, res) => {
   try {
     const productId = parseInt(req.params.pid);
     const product = await productManager.getProductDescription(productId);
@@ -189,18 +163,17 @@ router.get("/:pid/description", async (req, res) => {
       res.status(404).json({ error: "Producto no encontrado" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener la descripción del producto" });
+    res
+      .status(500)
+      .json({ error: "Error al obtener la descripción del producto" });
   }
-});
+};
 
-
-// GET '/products': Obtiene todos los productos con paginación, ordenamiento y filtrado
-router.get("/products", async (req, res) => {
+exports.getProductsWithPagination = async (req, res) => {
   try {
     const { page = 1, limit = 10, sort, category, availability } = req.query;
     let query = {};
 
-    // Agregar lógica de filtrado por categoría y disponibilidad
     if (category) {
       query.category = category;
     }
@@ -208,11 +181,10 @@ router.get("/products", async (req, res) => {
       query.availability = availability;
     }
 
-    // Agregar lógica de ordenamiento por precio
     let sortQuery = {};
-    if (sort === 'price') {
+    if (sort === "price") {
       sortQuery.price = 1; // Orden ascendente por precio
-    } else if (sort === '-price') {
+    } else if (sort === "-price") {
       sortQuery.price = -1; // Orden descendente por precio
     }
 
@@ -227,6 +199,4 @@ router.get("/products", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error al obtener productos" });
   }
-});
-
-module.exports = router;
+};
