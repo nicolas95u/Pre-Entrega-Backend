@@ -1,7 +1,8 @@
-const UserManager = require("../dao/mongoDb/UserManager");
+const UserRepository = require('../repositories/UserRepository');
+const UserDTO = require('../dtos/UserDTO');
 const passport = require("passport");
 
-const userManager = new UserManager();
+const userRepository = new UserRepository('mongodb'); // Ajusta según el tipo de persistencia
 
 exports.register = async (req, res) => {
   try {
@@ -72,6 +73,9 @@ exports.githubCallbackSuccess = (req, res) => {
 };
 
 exports.getCurrentUser = (req, res) => {
-  const { password, ...user } = req.session.user;
-  res.send({ ...user });
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+  const userDTO = new UserDTO(req.session.user);
+  res.json(userDTO);
 };

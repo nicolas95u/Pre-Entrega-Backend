@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sessionController = require("../controllers/sessionController");
 const isAdmin = require("../middlewares/validation/isAdmin.middleware");
+const isUser = require("../middlewares/validation/isUser.middleware"); // Importar middleware isUser
 const passport = require("passport");
 
 router.post(
@@ -32,6 +33,6 @@ router.get(
   sessionController.githubCallbackSuccess
 );
 
-router.get("/current", sessionController.getCurrentUser);
+router.get("/current", isUser, sessionController.getCurrentUser); // Usar middleware isUser
 
 module.exports = router;

@@ -30,7 +30,6 @@ exports.createProduct = async (req, res) => {
   };
 
   try {
-    io.emit("createProduct", newProduct);
     await productManager.addProduct(newProduct);
     res.status(201).json({ message: "Producto creado correctamente :)" });
   } catch (error) {
@@ -68,7 +67,7 @@ exports.getAllProducts = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
   try {
-    const productId = parseInt(req.params.pid);
+    const productId = req.params.pid;
     const product = await productManager.getProductById(productId);
 
     if (product) {
@@ -109,7 +108,7 @@ exports.updateProduct = async (req, res) => {
     if (price !== undefined && validateNumber([price])) {
       object.price = price;
     }
-    if (typeof status == "boolean") {
+    if (typeof status === "boolean") {
       object.status = status;
     }
     if (stock !== undefined && validateNumber([stock])) {
@@ -122,10 +121,7 @@ exports.updateProduct = async (req, res) => {
       object.thumbnails = thumbnails;
     }
 
-    const productUpdated = await productManager.updateProduct(
-      parseInt(id),
-      object
-    );
+    const productUpdated = await productManager.updateProduct(id, object);
 
     if (!productUpdated) {
       res.status(404).json({ error: "Error 404: producto no encontrado" });
@@ -139,7 +135,7 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   try {
-    const productId = parseInt(req.params.pid);
+    const productId = req.params.pid;
     const product = await productManager.deleteProduct(productId);
 
     if (product) {
@@ -154,7 +150,7 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getProductDescription = async (req, res) => {
   try {
-    const productId = parseInt(req.params.pid);
+    const productId = req.params.pid;
     const product = await productManager.getProductDescription(productId);
 
     if (product) {

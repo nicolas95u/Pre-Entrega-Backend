@@ -5,8 +5,7 @@ const {
   createHash,
   isValidPassword,
 } = require("../utils/validator/authentication.utils");
-const UserManager = require("../dao/mongoDb/UserManager");
-const userManager = new UserManager();
+const userManager = require("../dao/mongoDb/UserManager"); // Importar directamente la instancia
 
 exports.initializePassport = () => {
   const LocalStrategy = local.Strategy;
@@ -22,7 +21,7 @@ exports.initializePassport = () => {
         try {
           const { firstName, lastName, email, age } = req.body;
 
-          let user = await userManager.findUserByEmail({ email });
+          let user = await userManager.findUserByEmail(email); // Ajustar llamada a función
 
           if (user) {
             console.log("User already exists");
@@ -41,7 +40,7 @@ exports.initializePassport = () => {
 
           return done(null, result);
         } catch (error) {
-          return done("Error al obtener el usuario: " + error);
+          return done("Error al registrar el usuario: " + error);
         }
       }
     )
@@ -52,8 +51,12 @@ exports.initializePassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    let user = await userManager.findUserById({ id });
-    done(null, user);
+    try {
+      let user = await userManager.findUserById(id); // Ajustar llamada a función
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
   });
 
   passport.use(
@@ -62,7 +65,7 @@ exports.initializePassport = () => {
       { usernameField: "email" },
       async (email, password, done) => {
         try {
-          const user = await userManager.findUserByEmail({ email });
+          const user = await userManager.findUserByEmail(email); // Ajustar llamada a función
           if (!user) {
             console.log("User doesn't exist");
             return done(null, false);
@@ -86,16 +89,14 @@ exports.initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await userManager.findUserByEmail({
-            email: profile._json.email,
-          });
+          let user = await userManager.findUserByEmail(profile._json.email); // Ajustar llamada a función
           if (!user) {
             let result = await userManager.registerUser(
-              profile._json.firstName,
-              profile._json.lastName,
+              profile._json.firstName || profile.username,
+              profile._json.lastName || "",
               profile._json.email,
-              null, // Age - You can pass any value you want here
-              accessToken // Save the access token for GitHub
+              null, // Age - Puedes pasar cualquier valor aquí
+              accessToken // Guardar el token de acceso para GitHub
             );
             done(null, result);
           } else {

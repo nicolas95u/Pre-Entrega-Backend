@@ -42,15 +42,20 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Conectar a la base de datos
+connectToDatabase(process.env.MONGO_URL);
+
 // Rutas
 const mainRouter = require("./routes/mainRouter");
+const productRoutes = require("./routes/product.router");
+const cartRoutes = require("./routes/cart.router");
+
 app.use("/", mainRouter);
+app.use("/api/products", productRoutes);
+app.use("/api/carts", cartRoutes);
 
 // Manejo de Socket.IO
 socketHandler(io);
-
-// Conectar a la base de datos
-connectToDatabase(process.env.MONGO_URL);
 
 // Iniciar el servidor
 const PORT = 8080;

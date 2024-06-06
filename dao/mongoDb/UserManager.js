@@ -1,13 +1,10 @@
 const User = require('../models/user');
 const { isValidPassword } = require('../../utils/validator/authentication.utils');
 
-
 class UserManager {
   async registerUser(firstName, lastName, email, age, password) {
     try {
-      
       const newUser = new User({ firstName, lastName, email, age, password });
-      
       await newUser.save();
       return newUser;
     } catch (error) {
@@ -16,31 +13,30 @@ class UserManager {
   }
 
   async findUserByEmail(email) {
-  
     try {
-      return await User.findOne( email );
+      return await User.findOne({ email });
     } catch (error) {
-      console.log (error.message)
+      console.log(error.message);
       throw new Error('Error finding user by email');
     }
   }
 
-  
-
   async findUserById(id) {
     try {
-      return await User.findOne(id);
+      return await User.findById(id);
     } catch (error) {
-      console.log (error.message)
-      throw new Error('Error finding user by email');
+      console.log(error.message);
+      throw new Error('Error finding user by id');
     }
   }
 
   async verifyCredentials(email, password) {
     try {
       const user = await User.findOne({ email });
-
-      return user !== null ? isValidPassword (user , password):false ;
+      if (user) {
+        return isValidPassword(user, password);
+      }
+      return false;
     } catch (error) {
       throw new Error('Error verifying credentials');
     }
@@ -56,4 +52,4 @@ class UserManager {
   }
 }
 
-module.exports = UserManager;
+module.exports = new UserManager();

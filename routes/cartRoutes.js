@@ -1,71 +1,20 @@
-const express = require("express");
-const CartManager = require("../dao/mongoDb/CartManager");
+const express = require('express');
+const CartManager = require('../dao/mongoDb/CartManager');
+const Ticket = require('../dao/models/ticket');
+const isUser = require('../middlewares/validation/isUser.middleware');
 const router = express.Router();
 const cartManager = new CartManager();
 
-// Endpoint para actualizar la cantidad de un producto en el carrito
-router.put("/:cid/product/:pid", async (req, res) => {
+// Endpoint para agregar productos al carrito
+router.post('/add-to-cart', isUser, async (req, res) => {
+  const { productId, quantity } = req.body;
+  const userId = req.user._id;
+
   try {
-    const { cid, pid } = req.params;
-    const { quantity } = req.body;
-
-    await cartManager.updateProductQuantity(
-      parseInt(cid),
-      parseInt(pid),
-      parseInt(quantity)
-    );
-
-    res
-      .status(200)
-      .json({ message: "Cantidad de producto actualizada correctamente" });
+    const cart = await cartManager.addProductToCart(userId, productId, quantity);
+    res.status(200).json({ message: 'Producto agregado al carrito', cart });
   } catch (error) {
-    res.status(500).json({
-      error: "Error al actualizar la cantidad del producto en el carrito",
-    });
-  }
-});
-
-router.post("/create", async (req, res) => {
-  try {
-    const userId = req.userId; // Obtener ID del usuario de la solicitud
-    const cartId = await createCart(userId); // Crear el carrito
-
-    res
-      .status(201)
-      .json({ message: "Carrito creado correctamente", cartId: cartId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al crear carrito" });
-  }
-});
-
-// Endpoint para eliminar un producto específico del carrito
-router.delete("/:cid/product/:pid", async (req, res) => {
-  try {
-    const { cid, pid } = req.params;
-
-    await cartManager.removeProduct(parseInt(cid), parseInt(pid));
-
-    res
-      .status(200)
-      .json({ message: "Producto eliminado del carrito correctamente" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error al eliminar el producto del carrito" });
-  }
-});
-
-// Endpoint para vaciar completamente el carrito
-router.delete("/:cid", async (req, res) => {
-  try {
-    const { cid } = req.params;
-
-    await cartManager.clearCart(parseInt(cid));
-
-    res.status(200).json({ message: "Carrito vaciado correctamente" });
-  } catch (error) {
-    res.status(500).json({ error: "Error al vaciar el carrito" });
+    res.status(500).json({ message: 'Error al agregar producto al carrito', error: error.message });
   }
 });
 
@@ -74,14 +23,51 @@ router.get("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
 
-    // Usar populate para obtener detalles completos de productos en el carrito
-    const cart = await cartManager.getCartWithDetails(parseInt(cid));
+    const cart = await cartManager.getCartById(cid);
 
     res.status(200).json(cart);
   } catch (error) {
     res
       .status(500)
       .json({ error: "Error al obtener el carrito con detalles de productos" });
+  }
+});
+
+// Endpoint para finalizar la compra y generar un ticket
+router.post('/:cid/purchase', isUser, async (req, res) => {
+  const cartId = req.params.cid;
+
+  try {
+    const cart = await cartManager.getCartById(cartId);
+    if (!cart) {
+      return res.status(404).json({ message: 'Carrito no encontrado' });
+    }
+
+    let totalAmount = 0;
+    for (let item of cart.products) {
+      const product = await cartManager.getProductById(item.product._id);
+      if (product.stock < item.quantity) {
+        return res.status(400).json({ message: `No hay suficiente stock para el producto ${product.title}` });
+      }
+      totalAmount += product.price * item.quantity;
+    }
+
+    const ticket = new Ticket({
+      code: `TICKET-${Date.now()}`,
+      purchase_datetime: new Date(),
+      amount: totalAmount,
+      purchaser: req.user.email,
+    });
+    await ticket.save();
+
+    for (let item of cart.products) {
+      await cartManager.updateProductStock(item.product._id, -item.quantity);
+    }
+
+    res.json(ticket);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error procesando la compra' });
   }
 });
 
