@@ -1,6 +1,6 @@
 const express = require('express');
 const CartManager = require('../dao/mongoDb/CartManager');
-const Ticket = require('../dao/models/ticket');
+const Ticket = require('../models/ticket');
 const isUser = require('../middlewares/validation/isUser.middleware');
 const router = express.Router();
 const cartManager = new CartManager();

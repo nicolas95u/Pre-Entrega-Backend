@@ -1,5 +1,5 @@
-const Cart = require("../models/carts");
-const Product = require("../models/products");
+const Cart = require("../../models/carts");
+const Product = require("../../models/products");
 const { validateObjectId } = require("../../utils/validator/objectId.utils");
 
 class CartManager {

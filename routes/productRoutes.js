@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController");
-
+const generateMockProducts = require("../utils/validator/mocking");
 const {
   validateStringFields,
 } = require("../middlewares/validation/string.middleware");
@@ -15,6 +15,12 @@ const {
 const {
   validateArrayOfStringsField,
 } = require("../middlewares/validation/array.middleware");
+
+// Endpoint de Mocking
+router.get("/mockingproducts", (req, res) => {
+  const mockProducts = generateMockProducts();
+  res.status(200).json(mockProducts);
+});
 
 // POST '/': Crea un nuevo producto
 router.post(

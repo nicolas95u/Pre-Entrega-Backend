@@ -9,6 +9,7 @@ const passport = require("passport");
 const { initializePassport } = require("./config/passport.config");
 const { connectToDatabase } = require("./config/database");
 const socketHandler = require("./config/socketHandler");
+const errorHandler = require("./utils/validator/errorHandler");
 
 const app = express();
 const server = http.createServer(app);
@@ -47,8 +48,8 @@ connectToDatabase(process.env.MONGO_URL);
 
 // Rutas
 const mainRouter = require("./routes/mainRouter");
-const productRoutes = require("./routes/product.router");
-const cartRoutes = require("./routes/cart.router");
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 app.use("/", mainRouter);
 app.use("/api/products", productRoutes);
@@ -56,6 +57,9 @@ app.use("/api/carts", cartRoutes);
 
 // Manejo de Socket.IO
 socketHandler(io);
+
+// Middleware de manejo de errores
+app.use(errorHandler);
 
 // Iniciar el servidor
 const PORT = 8080;
