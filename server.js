@@ -10,6 +10,7 @@ const { initializePassport } = require("./config/passport.config");
 const { connectToDatabase } = require("./config/database");
 const socketHandler = require("./config/socketHandler");
 const errorHandler = require("./utils/validator/errorHandler");
+const logger = require('./config/logger'); 
 
 const app = express();
 const server = http.createServer(app);
@@ -55,14 +56,21 @@ app.use("/", mainRouter);
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 
+// Endpoint de Mocking
+const mockProducts = require("./utils/validator/mocking");
+app.use("/mockingproducts", mockProducts);
+
 // Manejo de Socket.IO
 socketHandler(io);
 
 // Middleware de manejo de errores
 app.use(errorHandler);
 
-// Iniciar el servidor
+// Definir el puerto antes de usarlo
 const PORT = 8080;
+
+// Log points
+logger.info(`Server is starting on port ${PORT}`);
 server.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+  logger.info(`Servidor escuchando en el puerto ${PORT}`);
 });

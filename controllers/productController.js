@@ -5,6 +5,7 @@ const {
   validateString,
   validateArrayOfStrings,
 } = require("../utils/validator");
+const logger = require("../config/logger");
 
 exports.createProduct = async (req, res) => {
   const {
@@ -31,8 +32,10 @@ exports.createProduct = async (req, res) => {
 
   try {
     await productManager.addProduct(newProduct);
+    logger.info("Producto creado correctamente.");
     res.status(201).json({ message: "Producto creado correctamente :)" });
   } catch (error) {
+    logger.error("Error al crear producto:", error);
     res.status(500).json({ error: "Error al crear producto" });
   }
 };
@@ -43,8 +46,10 @@ exports.addReview = async (req, res) => {
 
   try {
     // Lógica para agregar la revisión al producto con ID pid
+    logger.info("Revisión creada correctamente.");
     res.status(201).json({ message: "Revisión creada correctamente :)" });
   } catch (error) {
+    logger.error("Error al crear revisión:", error);
     res.status(500).json({ error: "Error al crear revisión" });
   }
 };
@@ -61,6 +66,7 @@ exports.getAllProducts = async (req, res) => {
 
     res.json(products);
   } catch (error) {
+    logger.error("Error al obtener productos:", error);
     res.status(500).json({ error: "Error al obtener productos" });
   }
 };
@@ -76,6 +82,7 @@ exports.getProductById = async (req, res) => {
       res.status(404).json({ error: "Producto no encontrado" });
     }
   } catch (error) {
+    logger.error("Error al obtener producto:", error);
     res.status(500).json({ error: "Error al obtener producto" });
   }
 };
@@ -127,8 +134,10 @@ exports.updateProduct = async (req, res) => {
       res.status(404).json({ error: "Error 404: producto no encontrado" });
       return;
     }
+    logger.info("Producto editado correctamente.");
     res.status(200).json({ message: "Producto editado correctamente :)" });
   } catch (error) {
+    logger.error("Error al actualizar producto:", error);
     res.status(500).json({ error: "Error al actualizar producto" });
   }
 };
@@ -139,11 +148,13 @@ exports.deleteProduct = async (req, res) => {
     const product = await productManager.deleteProduct(productId);
 
     if (product) {
+      logger.info("Producto eliminado correctamente.");
       res.json({ message: "Producto eliminado correctamente." });
     } else {
       res.status(404).json({ error: "Producto no encontrado" });
     }
   } catch (error) {
+    logger.error("Error al eliminar producto:", error);
     res.status(500).json({ error: "Error al eliminar producto" });
   }
 };
@@ -159,6 +170,7 @@ exports.getProductDescription = async (req, res) => {
       res.status(404).json({ error: "Producto no encontrado" });
     }
   } catch (error) {
+    logger.error("Error al obtener la descripción del producto:", error);
     res
       .status(500)
       .json({ error: "Error al obtener la descripción del producto" });
@@ -193,6 +205,7 @@ exports.getProductsWithPagination = async (req, res) => {
     const products = await productManager.getProducts(query, options);
     res.json(products);
   } catch (error) {
+    logger.error("Error al obtener productos:", error);
     res.status(500).json({ error: "Error al obtener productos" });
   }
 };
