@@ -6,7 +6,6 @@ const isUser = require("../middlewares/validation/isUser.middleware"); // Import
 const passport = require("passport");
 const forgotPasswordController = require('../controllers/forgotPasswordController');
 
-
 router.post(
   "/register",
   passport.authenticate("register", { failureRedirect: "/failregister" }),

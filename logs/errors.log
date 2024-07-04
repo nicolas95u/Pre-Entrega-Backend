@@ -57,3 +57,37 @@
 2024-07-03 22:14:28 [[32minfo[39m]: Servidor escuchando en el puerto 8080
 2024-07-03 22:16:33 [[32minfo[39m]: Server is starting on port 8080
 2024-07-03 22:16:33 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 22:43:07 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 22:43:07 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 22:43:57 [[32minfo[39m]: Attempting to send reset password email to recuperacioncontrasenacode@gmail.com
+2024-07-03 22:43:57 [[33mwarn[39m]: User with email recuperacioncontrasenacode@gmail.com not found
+2024-07-03 22:46:16 [[32minfo[39m]: Attempting to send reset password email to belen@hotmail.com
+2024-07-03 22:46:16 [[32minfo[39m]: Generated reset link: undefined/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Njc3N2E0ZWQyMjFkMzhjMjE0ZDBlZWIiLCJpYXQiOjE3MjAwNTc1NzYsImV4cCI6MTcyMDA2MTE3Nn0.OEBICELx-5t4Vl9LSHYw-Q2KnYvSMajmoiNGQu7chmk
+2024-07-03 22:46:16 [[31merror[39m]: Error sending reset password email sendEmail is not a function
+2024-07-03 22:47:00 [[32minfo[39m]: Attempting to send reset password email to roberto@roberto.com
+2024-07-03 22:47:00 [[32minfo[39m]: Generated reset link: undefined/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjI4ODNhNmNlNDQ4MjU2ZmYwN2Q2MjQiLCJpYXQiOjE3MjAwNTc2MjAsImV4cCI6MTcyMDA2MTIyMH0.XKVfSDrD8tmaMI7y7gvV3pSdvDwt8amatjAkUl_izlo
+2024-07-03 22:47:00 [[31merror[39m]: Error sending reset password email sendEmail is not a function
+2024-07-03 22:49:24 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 22:49:24 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 22:49:43 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 22:49:43 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 22:51:24 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 22:51:24 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 22:51:44 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 22:51:44 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 22:56:25 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 22:56:25 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 23:40:57 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 23:40:57 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 23:49:59 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 23:49:59 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 23:50:21 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 23:50:21 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-03 23:50:50 [[32minfo[39m]: Server is starting on port 8080
+2024-07-03 23:50:50 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-04 00:02:03 [[32minfo[39m]: Server is starting on port 8080
+2024-07-04 00:02:03 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-04 00:02:32 [[32minfo[39m]: Server is starting on port 8080
+2024-07-04 00:02:32 [[32minfo[39m]: Servidor escuchando en el puerto 8080
+2024-07-04 00:04:15 [[32minfo[39m]: Server is starting on port 8080
+2024-07-04 00:04:15 [[32minfo[39m]: Servidor escuchando en el puerto 8080
