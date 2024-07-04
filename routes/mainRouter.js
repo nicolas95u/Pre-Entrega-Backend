@@ -1,15 +1,16 @@
-// mainRouter.js
 const express = require("express");
 const router = express.Router();
 const productRouter = require("./productRoutes");
 const cartRouter = require("./cartRoutes");
 const sessionRouter = require("./sessionRoutes");
+const userRouter = require("./userRoutes");
 const viewsRouter = require("./viewsRoutes");
 const logger = require("../config/logger");
 
 router.use("/products", productRouter);
 router.use("/cart", cartRouter);
 router.use("/session", sessionRouter);
+router.use("/users", userRouter);
 router.use("/", viewsRouter);
 
 // Endpoint para probar el logger

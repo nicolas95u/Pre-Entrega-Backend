@@ -4,6 +4,8 @@ const sessionController = require("../controllers/sessionController");
 const isAdmin = require("../middlewares/validation/isAdmin.middleware");
 const isUser = require("../middlewares/validation/isUser.middleware"); // Importar middleware isUser
 const passport = require("passport");
+const forgotPasswordController = require('../controllers/forgotPasswordController');
+
 
 router.post(
   "/register",
@@ -33,6 +35,10 @@ router.get(
   sessionController.githubCallbackSuccess
 );
 
-router.get("/current", isUser, sessionController.getCurrentUser); // Usar middleware isUser
+router.get("/current", isUser, sessionController.getCurrentUser); 
+
+router.post('/forgot-password', forgotPasswordController.sendResetPasswordEmail); // Corregido el nombre de la función
+
+router.post('/reset-password/:token', forgotPasswordController.resetPassword); // Añadida la ruta para resetear la contraseña
 
 module.exports = router;

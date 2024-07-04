@@ -19,6 +19,8 @@ exports.createProduct = async (req, res) => {
     thumbnails,
   } = req.body;
 
+  const owner = req.user.role === "premium" ? req.user.email : "admin";
+
   const newProduct = {
     title,
     description,
@@ -28,6 +30,7 @@ exports.createProduct = async (req, res) => {
     stock,
     category,
     thumbnails,
+    owner,
   };
 
   try {
@@ -45,7 +48,6 @@ exports.addReview = async (req, res) => {
   const { rating, comment } = req.body;
 
   try {
-    // Lógica para agregar la revisión al producto con ID pid
     logger.info("Revisión creada correctamente.");
     res.status(201).json({ message: "Revisión creada correctamente :)" });
   } catch (error) {
@@ -103,6 +105,15 @@ exports.updateProduct = async (req, res) => {
     const id = req.params.pid;
     const object = {};
 
+    const product = await productManager.getProductById(id);
+    if (!product) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+
+    if (req.user.role !== "admin" && product.owner !== req.user.email) {
+      return res.status(403).json({ error: "No tienes permiso para actualizar este producto" });
+    }
+
     if (title !== undefined && validateString([title])) {
       object.title = title;
     }
@@ -145,14 +156,19 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.pid;
-    const product = await productManager.deleteProduct(productId);
+    const product = await productManager.getProductById(productId);
 
-    if (product) {
-      logger.info("Producto eliminado correctamente.");
-      res.json({ message: "Producto eliminado correctamente." });
-    } else {
-      res.status(404).json({ error: "Producto no encontrado" });
+    if (!product) {
+      return res.status(404).json({ error: "Producto no encontrado" });
     }
+
+    if (req.user.role !== "admin" && product.owner !== req.user.email) {
+      return res.status(403).json({ error: "No tienes permiso para eliminar este producto" });
+    }
+
+    await productManager.deleteProduct(productId);
+    logger.info("Producto eliminado correctamente.");
+    res.json({ message: "Producto eliminado correctamente." });
   } catch (error) {
     logger.error("Error al eliminar producto:", error);
     res.status(500).json({ error: "Error al eliminar producto" });
@@ -171,9 +187,7 @@ exports.getProductDescription = async (req, res) => {
     }
   } catch (error) {
     logger.error("Error al obtener la descripción del producto:", error);
-    res
-      .status(500)
-      .json({ error: "Error al obtener la descripción del producto" });
+    res.status(500).json({ error: "Error al obtener la descripción del producto" });
   }
 };
 
@@ -191,9 +205,9 @@ exports.getProductsWithPagination = async (req, res) => {
 
     let sortQuery = {};
     if (sort === "price") {
-      sortQuery.price = 1; // Orden ascendente por precio
+      sortQuery.price = 1;
     } else if (sort === "-price") {
-      sortQuery.price = -1; // Orden descendente por precio
+      sortQuery.price = -1;
     }
 
     const options = {

@@ -1,17 +1,18 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  first_name: { type: String, required: true },
+  last_name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  age: { type: Number },
+  age: { type: Number, required: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['admin', 'user'], default: 'user' },
-  githubId: { type: String }, // Campo para el ID de usuario de GitHub
-  githubAccessToken: { type: String }, // Campo para el token de acceso de GitHub
+  cart: { type: Schema.Types.ObjectId, ref: "Cart" },
+  role: { type: String, default: "user", enum: ["user", "admin", "premium"] }, 
+  githubId: { type: String },
+  githubAccessToken: { type: String }
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

@@ -1,16 +1,15 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
 
-const productSchema = new Schema({
-  title: String,
-  description: String,
-  code: String,
-  price: Number,
-  status: Boolean,
-  stock: Number,
-  category: String,
+const productSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  code: { type: String, required: true, unique: true },
+  price: { type: Number, required: true },
+  status: { type: Boolean, default: true },
+  stock: { type: Number, required: true },
+  category: { type: String, required: true },
   thumbnails: [String],
+  owner: { type: String, default: "admin" } // Este es el nuevo campo
 });
 
-const Product = model("Product", productSchema);
-
-module.exports = Product;
+module.exports = mongoose.model("Product", productSchema);
