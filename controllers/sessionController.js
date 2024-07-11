@@ -1,81 +1,76 @@
-const UserRepository = require('../repositories/UserRepository');
-const UserDTO = require('../dtos/UserDTO');
+const logger = require("../config/logger");
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
 const passport = require("passport");
-
-const userRepository = new UserRepository('mongodb'); // Ajusta según el tipo de persistencia
 
 exports.register = async (req, res) => {
   try {
-    res.redirect("/login");
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al registrar usuario" });
-  }
-};
+    const { email, password } = req.body;
+    let user = await User.findOne({ email });
 
-exports.failRegister = async (req, res) => {
-  console.log("Failed Strategy!");
-  res.send({ error: "Failed" });
-};
-
-exports.login = async (req, res) => {
-  try {
-    if (!req.user) {
-      return res
-        .status(400)
-        .send({ status: "error", error: "Invalid credentials" });
+    if (user) {
+      logger.warn(`User already exists: ${email}`);
+      return res.status(400).json({ error: "User already exists" });
     }
-    req.session.user = {
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      age: req.user.age,
-      email: req.user.email,
-    };
-    res.redirect("/");
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user = new User({ email, password: hashedPassword });
+    await user.save();
+
+    logger.info(`User registered successfully: ${email}`);
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al iniciar sesión" });
+    logger.error("Error in register: ", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+exports.failRegister = (req, res) => {
+  logger.warn("Fail register endpoint hit");
+  res.status(400).json({ error: "Registration failed" });
+};
+
+exports.login = (req, res) => {
+  logger.info(`User logged in: ${req.user.email}`);
+  res.status(200).json({ message: "Login successful" });
 };
 
 exports.failLogin = (req, res) => {
-  res.send({ error: "Failed Login" });
+  logger.warn("Fail login endpoint hit");
+  res.status(400).json({ error: "Login failed" });
 };
 
 exports.adminOnlyRoute = (req, res) => {
-  res.json({ message: "Acceso permitido para administradores" });
+  logger.info(`Admin route accessed by: ${req.user.email}`);
+  res.status(200).json({ message: "Admin route accessed" });
 };
 
-exports.logout = async (req, res) => {
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Error al cerrar sesión" });
-      }
-      res.status(200).json({ message: "Sesión cerrada correctamente" });
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al cerrar sesión" });
-  }
+exports.logout = (req, res) => {
+  req.logout(err => {
+    if (err) {
+      logger.error("Error during logout: ", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    logger.info("User logged out successfully");
+    res.status(200).json({ message: "Logout successful" });
+  });
 };
 
-exports.githubAuth = passport.authenticate("github", { scope: ["user:email"] });
+exports.githubAuth = passport.authenticate("github");
 
-exports.githubCallback = passport.authenticate("github", {
-  failureRedirect: "/login",
-});
+exports.githubCallback = passport.authenticate("github", { failureRedirect: "/session/faillogin" });
 
 exports.githubCallbackSuccess = (req, res) => {
-  req.session.user = req.user;
-  res.redirect("/");
+  logger.info(`GitHub login successful for user: ${req.user.email}`);
+  res.redirect("/profile");
 };
 
 exports.getCurrentUser = (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ message: 'Not authenticated' });
+  if (req.isAuthenticated()) {
+    logger.info(`Current user: ${req.user.email}`);
+    res.status(200).json(req.user);
+  } else {
+    logger.warn("No authenticated user found");
+    res.status(401).json({ error: "Not authenticated" });
   }
-  const userDTO = new UserDTO(req.session.user);
-  res.json(userDTO);
 };
