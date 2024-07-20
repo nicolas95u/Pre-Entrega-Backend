@@ -1,12 +1,12 @@
-const validateString = (strings) => {
-  let valid = true;
-  strings.forEach((string) => {
-    if (typeof string != "string" || string.length == 0) {
-      valid = false;
-      return;
+const validateStringFields = (fields) => {
+  return (req, res, next) => {
+    for (const field of fields) {
+      if (typeof req.body[field] !== 'string') {
+        return res.status(400).json({ error: `Invalid field ${field}` });
+      }
     }
-    return;
-  });
-  return valid;
+    next();
+  };
 };
-module.exports = { validateString };
+
+export default validateStringFields;

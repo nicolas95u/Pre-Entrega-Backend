@@ -1,8 +1,8 @@
-const validateTrue = (boolean) => {
-  if (typeof boolean != "boolean") {
-    return false;
+const validateTrueField = (values) => {
+  if (!Array.isArray(values)) {
+    throw new TypeError('Expected an array of values');
   }
-  return boolean;
+  return values.every((value) => typeof value === 'boolean');
 };
 
-module.exports = { validateTrue };
+export default validateTrueField;

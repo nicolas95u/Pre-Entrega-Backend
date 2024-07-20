@@ -1,20 +1,12 @@
-const { validateNumber } = require("../../utils/validator/number.utils");
-
-const validateNumberFields = (fields) => (req, res, next) => {
-  const valuesToValidate = fields.map((field) => req.body[field]);
-
-  if (!Array.isArray(valuesToValidate)) {
-    return res.status(400).send({ error: "Input must be an array." });
-  }
-  const isValid = validateNumber(valuesToValidate);
-
-  if (!isValid) {
-    return res
-      .status(400)
-      .send({ error: "All elements must be positive numbers." });
-  }
-
-  next();
+const validateNumberFields = (fields) => {
+  return (req, res, next) => {
+    for (let field of fields) {
+      if (typeof req.body[field] !== 'number' || isNaN(req.body[field])) {
+        return res.status(400).json({ message: `Invalid ${field}` });
+      }
+    }
+    next();
+  };
 };
 
-module.exports = { validateNumberFields };
+export default validateNumberFields;

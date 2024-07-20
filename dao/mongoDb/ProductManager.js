@@ -1,38 +1,81 @@
-const Product = require("../../models/products");
+import Product from "../../models/products.js";
 
 class ProductManager {
-  constructor() {
-    this.products = [];
-  }
-
-  async addProduct(product) {
-    const newProduct = new Product(product);
-    await newProduct.save();
-  }
-
-  async getProducts() {
-    return await Product.find();
-  }
-
-  async getProductById(id) {
-    return await Product.findById(id);
-  }
-
-  async getProductDescription(id) {
-    const product = await Product.findById(id);
-    if (product) {
-      return product.description;
+  async addProduct(productData) {
+    try {
+      const product = new Product(productData);
+      await product.save();
+      return product;
+    } catch (error) {
+      console.error("Error adding product:", error);
+      throw new Error("Unable to add product");
     }
-    return null;
   }
 
-  async updateProduct(id, newData) {
-    await Product.findByIdAndUpdate(id, newData);
+  async deleteProduct(productId) {
+    try {
+      await Product.findByIdAndDelete(productId);
+      return { message: "Product deleted successfully" };
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      throw new Error("Unable to delete product");
+    }
   }
 
-  async deleteProduct(id) {
-    await Product.findByIdAndDelete(id);
+  async getProducts(query = {}, options = {}) {
+    try {
+      return await Product.paginate(query, options);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error("Unable to fetch products");
+    }
+  }
+
+  async getProductById(productId) {
+    try {
+      return await Product.findById(productId);
+    } catch (error) {
+      console.error("Error fetching product by ID:", error);
+      throw new Error("Unable to fetch product by ID");
+    }
+  }
+
+  async updateProduct(productId, updateData) {
+    try {
+      return await Product.findByIdAndUpdate(productId, updateData, { new: true });
+    } catch (error) {
+      console.error("Error updating product:", error);
+      throw new Error("Unable to update product");
+    }
+  }
+
+  async addReview(productId, reviewData) {
+    try {
+      const product = await Product.findById(productId);
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      product.reviews.push(reviewData);
+      await product.save();
+      return reviewData;
+    } catch (error) {
+      console.error("Error adding review:", error);
+      throw new Error("Unable to add review");
+    }
+  }
+
+  async getProductDescription(productId) {
+    try {
+      const product = await Product.findById(productId).select("description");
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      return product.description;
+    } catch (error) {
+      console.error("Error fetching product description:", error);
+      throw new Error("Unable to fetch product description");
+    }
   }
 }
 
-module.exports = ProductManager;
+export default ProductManager;

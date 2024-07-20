@@ -1,18 +1,29 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const userSchema = new Schema({
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
+const userSchema = new mongoose.Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  age: { type: Number, required: true },
   password: { type: String, required: true },
-  cart: { type: Schema.Types.ObjectId, ref: "Cart" },
-  role: { type: String, default: "user", enum: ["user", "admin", "premium"] }, 
-  githubId: { type: String },
-  githubAccessToken: { type: String }
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+}, { timestamps: true });
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
-const User = mongoose.model("User", userSchema);
+userSchema.methods.isValidPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
-module.exports = User;
+const User = mongoose.model('User', userSchema);
+
+export default User;

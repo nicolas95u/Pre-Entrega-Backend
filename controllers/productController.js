@@ -1,13 +1,14 @@
-const ProductManager = require("../dao/mongoDb/ProductManager");
-const productManager = new ProductManager();
-const {
-  validateNumber,
-  validateString,
-  validateArrayOfStrings,
-} = require("../utils/validator");
-const logger = require("../config/logger");
+import ProductManager from "../dao/mongoDb/ProductManager.js";
+import {
+  validateNumberFields,
+  validateStringFields,
+  validateArrayOfStringsField,
+} from "../utils/validator/index.js";
+import logger from "../config/logger.js";
 
-exports.createProduct = async (req, res) => {
+const productManager = new ProductManager();
+
+const createProduct = async (req, res) => {
   const {
     title,
     description,
@@ -43,7 +44,7 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-exports.addReview = async (req, res) => {
+const addReview = async (req, res) => {
   const { pid } = req.params;
   const { rating, comment } = req.body;
 
@@ -56,7 +57,7 @@ exports.addReview = async (req, res) => {
   }
 };
 
-exports.getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res) => {
   try {
     const limit = req.query.limit;
     let products = await productManager.getProducts();
@@ -73,7 +74,7 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-exports.getProductById = async (req, res) => {
+const getProductById = async (req, res) => {
   try {
     const productId = req.params.pid;
     const product = await productManager.getProductById(productId);
@@ -89,7 +90,7 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-exports.updateProduct = async (req, res) => {
+const updateProduct = async (req, res) => {
   try {
     const {
       title,
@@ -114,28 +115,28 @@ exports.updateProduct = async (req, res) => {
       return res.status(403).json({ error: "No tienes permiso para actualizar este producto" });
     }
 
-    if (title !== undefined && validateString([title])) {
+    if (title !== undefined && validateStringFields([title])) {
       object.title = title;
     }
-    if (description !== undefined && validateString([description])) {
+    if (description !== undefined && validateStringFields([description])) {
       object.description = description;
     }
-    if (code !== undefined && validateString([code])) {
+    if (code !== undefined && validateStringFields([code])) {
       object.code = code;
     }
-    if (price !== undefined && validateNumber([price])) {
+    if (price !== undefined && validateNumberFields([price])) {
       object.price = price;
     }
     if (typeof status === "boolean") {
       object.status = status;
     }
-    if (stock !== undefined && validateNumber([stock])) {
+    if (stock !== undefined && validateNumberFields([stock])) {
       object.stock = stock;
     }
-    if (category !== undefined && validateString([category])) {
+    if (category !== undefined && validateStringFields([category])) {
       object.category = category;
     }
-    if (thumbnails && validateArrayOfStrings(thumbnails)) {
+    if (thumbnails && validateArrayOfStringsField(thumbnails)) {
       object.thumbnails = thumbnails;
     }
 
@@ -153,7 +154,7 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.pid;
     const product = await productManager.getProductById(productId);
@@ -175,7 +176,7 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-exports.getProductDescription = async (req, res) => {
+const getProductDescription = async (req, res) => {
   try {
     const productId = req.params.pid;
     const product = await productManager.getProductDescription(productId);
@@ -191,7 +192,7 @@ exports.getProductDescription = async (req, res) => {
   }
 };
 
-exports.getProductsWithPagination = async (req, res) => {
+const getProductsWithPagination = async (req, res) => {
   try {
     const { page = 1, limit = 10, sort, category, availability } = req.query;
     let query = {};
@@ -222,4 +223,15 @@ exports.getProductsWithPagination = async (req, res) => {
     logger.error("Error al obtener productos:", error);
     res.status(500).json({ error: "Error al obtener productos" });
   }
+};
+
+export {
+  createProduct,
+  addReview,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  getProductDescription,
+  getProductsWithPagination
 };

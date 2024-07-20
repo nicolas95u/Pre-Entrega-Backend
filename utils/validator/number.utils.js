@@ -1,13 +1,12 @@
-const validateNumber = (numbers) => {
-  let valid = true;
-  numbers.forEach((number) => {
-    if (typeof number != "number" || number <= 0) {
-      valid = false;
-      return;
+const validateNumberFields = (fields) => {
+  return (req, res, next) => {
+    for (const field of fields) {
+      if (typeof req.body[field] !== 'number') {
+        return res.status(400).json({ error: `Invalid field ${field}` });
+      }
     }
-    return;
-  });
-  return valid;
+    next();
+  };
 };
 
-module.exports = { validateNumber };
+export default validateNumberFields;

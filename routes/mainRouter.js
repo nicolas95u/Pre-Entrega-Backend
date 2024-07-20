@@ -1,28 +1,21 @@
-const express = require("express");
+import express from 'express';
+import logger from '../config/logger.js';
+
 const router = express.Router();
-const productRouter = require("./productRoutes");
-const cartRouter = require("./cartRoutes");
-const sessionRouter = require("./sessionRoutes");
-const userRouter = require("./userRoutes");
-const viewsRouter = require("./viewsRoutes");
-const logger = require("../config/logger");
 
-router.use("/products", productRouter);
-router.use("/cart", cartRouter);
-router.use("/session", sessionRouter);
-router.use("/users", userRouter);
-router.use("/", viewsRouter);
-
-// Endpoint para probar el logger
-router.get("/loggerTest", (req, res) => {
-  logger.debug('This is a debug log');
-  logger.http('This is an http log');
-  logger.info('This is an info log');
-  logger.warn('This is a warning log');
-  logger.error('This is an error log');
-  logger.fatal('This is a fatal log');
-  
-  res.send("Logger test complete, check the logs.");
+router.get('/', (req, res) => {
+  logger.info('GET / - Homepage');
+  res.render('home', { title: 'Home' });
 });
 
-module.exports = router;
+router.get('/about', (req, res) => {
+  logger.info('GET /about - About Page');
+  res.render('about', { title: 'About' });
+});
+
+router.get('/contact', (req, res) => {
+  logger.info('GET /contact - Contact Page');
+  res.render('contact', { title: 'Contact' });
+});
+
+export default router;

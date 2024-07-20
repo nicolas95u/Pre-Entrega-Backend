@@ -1,4 +1,4 @@
-const faker = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
 const generateMockProducts = () => {
   const products = [];
@@ -17,4 +17,4 @@ const generateMockProducts = () => {
   return products;
 };
 
-module.exports = generateMockProducts;
+export default generateMockProducts;

@@ -1,25 +1,11 @@
-const { validateString } = require("../../utils/validator/string.utils");
-const { validateNumber } = require("../../utils/validator/number.utils");
-
-const validateArrayOfStrings = (array) => {
-  if (!Array.isArray(array)) {
-    return false;
-  }
-  return validateString(array);
-};
-const validateArrayProducts = (array) => {
-  if (!Array.isArray(array)) {
-    return false;
-  }
-  let isValid = true;
-  array.forEach((elem) => {
-    const { product, quantity } = elem;
-
-    if (!validateNumber([product, quantity])) {
-      isValid = false;
+const validateArrayOfStringsField = (field) => {
+  return (req, res, next) => {
+    const value = req.body[field];
+    if (!Array.isArray(value) || !value.every(item => typeof item === 'string')) {
+      return res.status(400).json({ error: `Invalid field ${field}` });
     }
-  });
-  return isValid;
+    next();
+  };
 };
 
-module.exports = { validateArrayOfStrings, validateArrayProducts };
+export default validateArrayOfStringsField;

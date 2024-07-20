@@ -1,17 +1,12 @@
-const { validateString } = require("../../utils/validator/string.utils");
-
-const validateStringFields = (fields) => (req, res, next) => {
-  const valuesToValidate = fields.map((field) => req.body[field]);
-
-  const isValid = validateString(valuesToValidate);
-
-  if (!isValid) {
-    return res
-      .status(400)
-      .send({ error: "All specified fields must be non-empty strings." });
-  }
-
-  next();
+const validateStringFields = (fields) => {
+  return (req, res, next) => {
+    for (let field of fields) {
+      if (typeof req.body[field] !== 'string' || req.body[field].trim() === '') {
+        return res.status(400).json({ message: `Invalid ${field}` });
+      }
+    }
+    next();
+  };
 };
 
-module.exports = { validateStringFields };
+export default validateStringFields;

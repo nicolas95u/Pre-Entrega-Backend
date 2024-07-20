@@ -1,4 +1,4 @@
-const ProductManager = require("../dao/mongoDb/ProductManager");
+import ProductManager from "../dao/mongoDb/ProductManager.js";
 const productManager = new ProductManager();
 
 const socketHandler = (io) => {
@@ -28,4 +28,4 @@ const socketHandler = (io) => {
   });
 };
 
-module.exports = socketHandler;
+export default socketHandler;

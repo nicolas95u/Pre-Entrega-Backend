@@ -1,29 +1,31 @@
-require("dotenv").config();
-const express = require("express");
-const http = require("http");
-const socketIo = require("socket.io");
-const exphbs = require("express-handlebars");
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
-const passport = require("passport");
-const { initializePassport } = require("./config/passport.config");
-const { connectToDatabase } = require("./config/database");
-const socketHandler = require("./config/socketHandler");
-const errorHandler = require("./utils/validator/errorHandler");
-const logger = require('./config/logger'); 
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
+import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import { engine } from 'express-handlebars';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
+import { connectToDatabase } from './config/database.js';
+import socketHandler from './config/socketHandler.js';
+import errorHandler from './utils/validator/errorHandler.js';
+import logger from './config/logger.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.engine("handlebars", exphbs.engine());
-app.set("view engine", "handlebars");
-app.set("views", "./views");
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './views');
 
 app.use(
   session({
@@ -44,16 +46,16 @@ app.use(passport.session());
 
 connectToDatabase(process.env.MONGO_URL);
 
-const mainRouter = require("./routes/mainRouter");
-const productRoutes = require("./routes/productRoutes");
-const cartRoutes = require("./routes/cartRoutes");
+import mainRouter from './routes/mainRouter.js';
+import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 
-app.use("/", mainRouter);
-app.use("/api/products", productRoutes);
-app.use("/api/carts", cartRoutes);
+app.use('/', mainRouter);
+app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRoutes);
 
-const mockProducts = require("./utils/validator/mocking");
-app.use("/mockingproducts", mockProducts);
+import mockProducts from './utils/validator/mocking.js';
+app.use('/mockingproducts', mockProducts);
 
 // Swagger setup
 const swaggerOptions = {

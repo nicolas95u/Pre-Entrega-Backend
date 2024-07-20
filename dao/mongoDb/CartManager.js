@@ -1,6 +1,6 @@
-const Cart = require("../../models/carts");
-const Product = require("../../models/products");
-const { validateObjectId } = require("../../utils/validator/objectId.utils");
+import Cart from "../../models/carts.js";
+import Product from "../../models/products.js";
+import { validateObjectId } from "../../utils/validator/objectId.utils.js";
 
 class CartManager {
   async createCart(userId) {
@@ -12,10 +12,9 @@ class CartManager {
         products: [],
       };
 
-      const cartManager = new CartManager();
-      await cartManager.addCart(newCart);
+      const cart = await this.addCart(newCart);
 
-      return newCart._id;
+      return cart._id;
     } catch (error) {
       console.error(error);
       throw new Error("Error al crear carrito");
@@ -27,6 +26,7 @@ class CartManager {
       const cart = new Cart(cartData);
       await cart.save();
       console.log("Carrito creado correctamente.");
+      return cart;
     } catch (error) {
       console.error("Error al crear el carrito:", error);
       throw new Error("No se pudo crear el carrito");
@@ -98,4 +98,4 @@ class CartManager {
   }
 }
 
-module.exports = CartManager;
+export default CartManager;

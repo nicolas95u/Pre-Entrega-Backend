@@ -1,7 +1,8 @@
-const express = require('express');
-const CartManager = require('../dao/mongoDb/CartManager');
-const Ticket = require('../models/ticket');
-const isUser = require('../middlewares/validation/isUser.middleware');
+import express from 'express';
+import CartManager from '../dao/mongoDb/CartManager.js';
+import Ticket from '../models/ticket.js';
+import isUser from '../middlewares/validation/isUser.middleware.js';
+
 const router = express.Router();
 const cartManager = new CartManager();
 
@@ -176,4 +177,4 @@ router.post('/:cid/purchase', isUser, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../server'; // Ajusta esta ruta según tu estructura
+import app from '../server.js'; // Asegúrate de que esta ruta es correcta y que el archivo server.js es un módulo ES.
 
 const { expect } = chai;
 

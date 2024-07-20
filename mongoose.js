@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 mongoose.connect('mongodb+srv://nicolas95u:<XRxK5mr9G9Q0OZxV>@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
@@ -13,4 +13,4 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-module.exports = mongoose;
+export default mongoose;

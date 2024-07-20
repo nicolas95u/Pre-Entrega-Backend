@@ -1,12 +1,24 @@
-const { Schema, model } = require("mongoose");
+import mongoose from 'mongoose';
 
-const ticketSchema = new Schema({
-  code: { type: String, required: true, unique: true },
-  purchase_datetime: { type: Date, required: true },
-  amount: { type: Number, required: true },
-  purchaser: { type: String, required: true },
+const ticketSchema = new mongoose.Schema({
+  code: {
+    type: String,
+    required: true,
+  },
+  purchase_datetime: {
+    type: Date,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  purchaser: {
+    type: String,
+    required: true,
+  },
 });
 
-const Ticket = model("Ticket", ticketSchema);
+const Ticket = mongoose.model('Ticket', ticketSchema);
 
-module.exports = Ticket;
+export default Ticket;

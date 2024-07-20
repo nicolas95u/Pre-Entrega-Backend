@@ -1,20 +1,28 @@
-const express = require("express");
-const router = express.Router();
-const productController = require("../controllers/productController");
-const generateMockProducts = require("../utils/validator/mocking");
-const {
+import express from "express";
+import {
+  createProduct,
+  addReview,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  getProductDescription,
+  getProductsWithPagination
+} from "../controllers/productController.js";
+import generateMockProducts from "../utils/validator/mocking.js";
+import {
   validateStringFields,
-} = require("../middlewares/validation/string.middleware");
-
-const {
   validateNumberFields,
-} = require("../middlewares/validation/number.middleware");
-const {
   validateTrueField,
-} = require("../middlewares/validation/boolean.middleware");
-const {
-  validateArrayOfStringsField,
-} = require("../middlewares/validation/array.middleware");
+  validateArrayOfStringsField
+} from "../middlewares/validation/index.js";
+
+const router = express.Router();
+
+router.get("/mockingproducts", (req, res) => {
+  const mockProducts = generateMockProducts();
+  res.status(200).json(mockProducts);
+});
 
 /**
  * @swagger
@@ -90,7 +98,7 @@ const {
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get("/", productController.getAllProducts);
+router.get("/", getAllProducts);
 
 /**
  * @swagger
@@ -115,7 +123,7 @@ router.get("/", productController.getAllProducts);
  *       404:
  *         description: Producto no encontrado
  */
-router.get("/:pid", productController.getProductById);
+router.get("/:pid", getProductById);
 
 /**
  * @swagger
@@ -143,9 +151,14 @@ router.post(
   "/",
   validateStringFields(["title", "description", "code", "category"]),
   validateNumberFields(["price", "stock"]),
-  validateTrueField("status"),
+  (req, res, next) => {
+    if (!validateTrueField([req.body.status])) {
+      return res.status(400).json({ error: "Invalid status field" });
+    }
+    next();
+  },
   validateArrayOfStringsField("thumbnails"),
-  productController.createProduct
+  createProduct
 );
 
 /**
@@ -185,7 +198,7 @@ router.post(
   "/:pid/reviews",
   validateNumberFields(["rating"]),
   validateStringFields(["comment"]),
-  productController.addReview
+  addReview
 );
 
 /**
@@ -215,7 +228,7 @@ router.post(
  *       500:
  *         description: Error al actualizar producto
  */
-router.put("/:pid", productController.updateProduct);
+router.put("/:pid", updateProduct);
 
 /**
  * @swagger
@@ -238,7 +251,7 @@ router.put("/:pid", productController.updateProduct);
  *       500:
  *         description: Error al eliminar producto
  */
-router.delete("/:pid", productController.deleteProduct);
+router.delete("/:pid", deleteProduct);
 
 /**
  * @swagger
@@ -261,7 +274,7 @@ router.delete("/:pid", productController.deleteProduct);
  *       500:
  *         description: Error al obtener la descripción del producto
  */
-router.get("/:pid/description", productController.getProductDescription);
+router.get("/:pid/description", getProductDescription);
 
 /**
  * @swagger
@@ -307,6 +320,6 @@ router.get("/:pid/description", productController.getProductDescription);
  *       500:
  *         description: Error al obtener productos
  */
-router.get("/products/pagination", productController.getProductsWithPagination);
+router.get("/products/pagination", getProductsWithPagination);
 
-module.exports = router;
+export default router;

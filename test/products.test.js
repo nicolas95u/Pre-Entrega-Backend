@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../server'; // Ajusta esta ruta según tu estructura
+import app from '../server.js'; // Ajusta esta ruta según tu estructura
 
 const { expect } = chai;
 
@@ -48,3 +48,5 @@ describe('Products API', () => {
       });
   });
 });
+
+export default app;

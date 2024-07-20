@@ -1,12 +1,14 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
+import logger from './logger.js';
 
-const connectToDatabase = async (mongoUrl) => {
+export const connectToDatabase = async (mongoUrl) => {
   try {
-    await mongoose.connect(mongoUrl, {});
-    console.log("Conectado a la base de datos");
+    await mongoose.connect(mongoUrl);
+    logger.info('Connected to the database');
   } catch (error) {
-    console.error("Error al conectar a la base de datos", error);
+    logger.error('Error connecting to the database', error);
+    throw error;
   }
 };
 
-module.exports = { connectToDatabase };
+export default connectToDatabase;
