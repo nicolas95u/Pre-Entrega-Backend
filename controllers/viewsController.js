@@ -1,22 +1,25 @@
-const ProductManager = require("../dao/mongoDb/ProductManager");
+import ProductManager from "../dao/mongoDb/ProductManagerMongo.js";
+import User from '../models/user.js'; 
+import logger from '../config/logger.js';
+
 const productManager = new ProductManager();
 
-exports.renderRegister = (req, res) => {
+const renderRegister = (req, res) => {
   res.render("register");
 };
 
-exports.renderLogin = (req, res) => {
+const renderLogin = (req, res) => {
   res.render("login");
 };
 
-exports.renderProfile = (req, res) => {
+const renderProfile = (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
   }
   res.render("profile", { user: req.session.user });
 };
 
-exports.renderHome = async (req, res) => {
+const renderHome = async (req, res) => {
   try {
     const limit = req.query.limit || 10;
     const page = req.query.page || 1;
@@ -57,11 +60,11 @@ exports.renderHome = async (req, res) => {
   }
 };
 
-exports.renderRealTimeProducts = (req, res) => {
+const renderRealTimeProducts = (req, res) => {
   res.render("realTimeProducts");
 };
 
-exports.renderUserManagement = async (req, res) => {
+const renderUserManagement = async (req, res) => {
   try {
     const users = await User.find({}, 'firstName lastName email role');
     res.render('userManagement', { users });
@@ -69,4 +72,13 @@ exports.renderUserManagement = async (req, res) => {
     logger.error('Error al renderizar la vista de administración de usuarios:', error);
     res.status(500).json({ error: 'Error al renderizar la vista' });
   }
+};
+
+export default {
+  renderRegister,
+  renderLogin,
+  renderProfile,
+  renderHome,
+  renderRealTimeProducts,
+  renderUserManagement,
 };
