@@ -168,7 +168,7 @@ const deleteProduct = async (req, res) => {
 
     const owner = await User.findOne({ email: product.owner });
     if (owner && owner.role === 'premium') {
-      sendDeletionEmail(owner.email, product.title);
+      await sendDeletionEmail(owner.email, product.title);
     }
 
     await productManager.deleteProduct(productId);
@@ -180,7 +180,7 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-const sendDeletionEmail = (email, productName) => {
+const sendDeletionEmail = async (email, productName) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -196,13 +196,12 @@ const sendDeletionEmail = (email, productName) => {
     text: `Tu producto "${productName}" ha sido eliminado del catálogo.`,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      logger.error('Error al enviar correo:', error);
-    } else {
-      logger.info('Correo enviado:', info.response);
-    }
-  });
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    logger.info('Correo enviado:', info.response);
+  } catch (error) {
+    logger.error('Error al enviar correo:', error);
+  }
 };
 
 const getProductDescription = async (req, res) => {
