@@ -21,7 +21,7 @@ exports.renderHome = async (req, res) => {
     const limit = req.query.limit || 10;
     const page = req.query.page || 1;
     const sort = req.query.sort || "";
-    let products = await productManager.getProducts();
+    const products = await productManager.getProducts();
 
     if (sort === "asc") {
       products.sort((a, b) => a.price - b.price);
@@ -52,11 +52,21 @@ exports.renderHome = async (req, res) => {
           : null,
       user: req.session.user,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Error al obtener productos" });
   }
 };
 
 exports.renderRealTimeProducts = (req, res) => {
   res.render("realTimeProducts");
+};
+
+exports.renderUserManagement = async (req, res) => {
+  try {
+    const users = await User.find({}, 'firstName lastName email role');
+    res.render('userManagement', { users });
+  } catch (error) {
+    logger.error('Error al renderizar la vista de administración de usuarios:', error);
+    res.status(500).json({ error: 'Error al renderizar la vista' });
+  }
 };

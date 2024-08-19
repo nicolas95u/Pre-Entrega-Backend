@@ -105,9 +105,10 @@
           window.location.href = '/login'; // Redirigir a la vista de login después del logout
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => logger.error('Error:', error));
     });
   </script>
 
 </body>
 </html>
+

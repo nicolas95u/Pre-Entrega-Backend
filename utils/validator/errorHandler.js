@@ -1,6 +1,8 @@
 const errorHandler = (err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: err.message });
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).json({ error: err.message || 'Error desconocido' });
 };
 
 export default errorHandler;

@@ -13,9 +13,14 @@
       <h2>{{this.product.title}}</h2>
       <p>Precio: {{this.product.price}}</p>
       <p>Cantidad: {{this.quantity}}</p>
-      <form action="/carts/{{cartId}}/product/{{this.product.id}}" method="POST">
+
+      <form action="/carts/{{../cart.id}}/product/{{this.product.id}}" method="POST">
         <input type="hidden" name="_method" value="DELETE">
         <button type="submit">Eliminar del Carrito</button>
+      </form>
+
+      <form action="/api/payments/create" method="POST">
+        <button type="submit">Pagar</button>
       </form>
     </li>
     {{/each}}

@@ -1,7 +1,8 @@
 import express from 'express';
-import CartManager from '../dao/mongoDb/CartManager.js';
+import CartManager from '../dao/mongoDb/CartManagerMongo.js';
 import Ticket from '../models/ticket.js';
 import isUser from '../middlewares/validation/isUser.middleware.js';
+import logger from '../config/logger.js';
 
 const router = express.Router();
 const cartManager = new CartManager();
@@ -110,7 +111,7 @@ router.get("/:cid", async (req, res) => {
     const cart = await cartManager.getCartById(cid);
 
     res.status(200).json(cart);
-  } catch (error) {
+  } catch {
     res
       .status(500)
       .json({ error: "Error al obtener el carrito con detalles de productos" });
@@ -150,7 +151,7 @@ router.post('/:cid/purchase', isUser, async (req, res) => {
     }
 
     let totalAmount = 0;
-    for (let item of cart.products) {
+    for (const item of cart.products) {
       const product = await cartManager.getProductById(item.product._id);
       if (product.stock < item.quantity) {
         return res.status(400).json({ message: `No hay suficiente stock para el producto ${product.title}` });
@@ -166,13 +167,13 @@ router.post('/:cid/purchase', isUser, async (req, res) => {
     });
     await ticket.save();
 
-    for (let item of cart.products) {
+    for (const item of cart.products) {
       await cartManager.updateProductStock(item.product._id, -item.quantity);
     }
 
     res.json(ticket);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: 'Error procesando la compra' });
   }
 });

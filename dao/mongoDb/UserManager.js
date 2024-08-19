@@ -1,5 +1,6 @@
 const User = require('../../models/user');
 const { isValidPassword } = require('../../utils/validator/authentication.utils');
+import logger from '/config/logger';
 
 class UserManager {
   async registerUser(firstName, lastName, email, age, password) {
@@ -16,7 +17,7 @@ class UserManager {
     try {
       return await User.findOne({ email });
     } catch (error) {
-      console.log(error.message);
+      logger.info(error.message);
       throw new Error('Error finding user by email');
     }
   }
@@ -25,7 +26,7 @@ class UserManager {
     try {
       return await User.findById(id);
     } catch (error) {
-      console.log(error.message);
+      logger.info(error.message);
       throw new Error('Error finding user by id');
     }
   }
@@ -37,7 +38,7 @@ class UserManager {
         return isValidPassword(user, password);
       }
       return false;
-    } catch (error) {
+    } catch {
       throw new Error('Error verifying credentials');
     }
   }
@@ -46,7 +47,7 @@ class UserManager {
     try {
       const user = await User.findOneAndUpdate({ email }, { role }, { new: true });
       return user;
-    } catch (error) {
+    } catch {
       throw new Error('Error updating user role');
     }
   }

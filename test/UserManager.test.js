@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const UserManager = require('../dao/mongoDb/UserManager');
 const { createHash } = require('../utils/validator/authentication.utils');
+import logger from '/config/logger';
 
 describe('UserManager', () => {
   beforeAll(async () => {
@@ -8,7 +9,7 @@ describe('UserManager', () => {
     try {
       await mongoose.connect('mongodb://localhost:27017/test_db');
     } catch (error) {
-      console.error('Error connecting to the database', error);
+      logger.error('Error connecting to the database', error);
     }
   }, 60000); // Aumentar el tiempo de espera a 60 segundos
 
@@ -18,7 +19,7 @@ describe('UserManager', () => {
       await mongoose.connection.dropDatabase(); // Actualizar llamada a dropDatabase
       await mongoose.disconnect();
     } catch (error) {
-      console.error('Error disconnecting from the database', error);
+      logger.error('Error disconnecting from the database', error);
     }
   }, 60000); // Aumentar el tiempo de espera a 60 segundos
 

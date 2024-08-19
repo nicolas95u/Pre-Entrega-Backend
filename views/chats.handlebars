@@ -1,4 +1,5 @@
  <!DOCTYPE html>
+ 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -30,10 +31,10 @@
           url: '/messages',
           data: { user: user, message: message },
           success: function(response) {
-            console.log('Message sent successfully');
+            logger.info('Message sent successfully');
           },
           error: function(error) {
-            console.error('Error sending message:', error);
+            logger.error('Error sending message:', error);
           }
         });
       });

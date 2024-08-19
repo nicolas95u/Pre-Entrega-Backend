@@ -1,4 +1,5 @@
-const fs = require("fs");
+import fs from 'fs';
+import logger from '/config/logger';
 
 class ProductManager {
   constructor(filePath) {
@@ -12,7 +13,7 @@ class ProductManager {
       const data = fs.readFileSync(this.filePath, "utf8");
       this.products = JSON.parse(data);
     } catch (error) {
-      console.error("Error loading products:", error);
+      logger.error("Error loading products:", error);
       throw new Error("Unable to load products");
     }
   }
@@ -20,9 +21,9 @@ class ProductManager {
   saveProducts() {
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(this.products, null, 2));
-      console.log("Products saved successfully.");
+      logger.info("Products saved successfully.");
     } catch (error) {
-      console.error("Error saving products:", error);
+      logger.error("Error saving products:", error);
       throw new Error("Unable to save products");
     }
   }
@@ -85,7 +86,7 @@ class ProductManager {
   }
 
   deleteProduct(id) {
-    const index = this.products.findIndex((product) => product.id == id);
+    const index = this.products.findIndex((product) => product.id === id);
     if (index !== -1) {
       this.products.splice(index, 1);
       this.saveProducts();
@@ -95,4 +96,4 @@ class ProductManager {
   }
 }
 
-module.exports = ProductManager;
+export default ProductManager;

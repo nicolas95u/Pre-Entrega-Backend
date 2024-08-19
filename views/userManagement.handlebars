@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Usuarios</title>
+</head>
+<body>
+    <h1>Administración de Usuarios</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo Electrónico</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.firstName}} {{this.lastName}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.role}}</td>
+                <td>
+                    <form action="/api/users/{{this._id}}/role" method="POST">
+                        <select name="role">
+                            <option value="user" {{#if (eq this.role 'user')}}selected{{/if}}>Usuario</option>
+                            <option value="premium" {{#if (eq this.role 'premium')}}selected{{/if}}>Premium</option>
+                            <option value="admin" {{#if (eq this.role 'admin')}}selected{{/if}}>Admin</option>
+                        </select>
+                        <button type="submit">Cambiar Rol</button>
+                    </form>
+                    <form action="/api/users/{{this._id}}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit">Eliminar Usuario</button>
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</body>
+</html>

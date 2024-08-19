@@ -1,9 +1,10 @@
-import ProductManager from "../dao/mongoDb/ProductManager.js";
+import ProductManager from "../dao/mongoDb/ProductManagerMongo.js";
+import logger from '../config/logger.js';
 const productManager = new ProductManager();
 
 const socketHandler = (io) => {
   io.on("connection", (socket) => {
-    console.log("A client connected");
+    logger.info("A client connected");
 
     socket.on("createProduct", async (productData) => {
       await productManager.addProduct(productData);
@@ -11,7 +12,7 @@ const socketHandler = (io) => {
         title: productData.title,
         id: productData.id,
       });
-      console.log("Product added");
+      logger.info("Product added");
     });
 
     socket.on("deleteProduct", async (productData) => {
@@ -19,11 +20,11 @@ const socketHandler = (io) => {
       io.emit("productDeleted", {
         message: "Product deleted",
       });
-      console.log("Product deleted");
+      logger.info("Product deleted");
     });
 
     socket.on("disconnect", () => {
-      console.log("A client disconnected");
+      logger.info("A client disconnected");
     });
   });
 };

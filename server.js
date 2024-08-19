@@ -15,6 +15,7 @@ import errorHandler from './utils/validator/errorHandler.js';
 import logger from './config/logger.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -26,6 +27,8 @@ app.use(express.json());
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
+
+app.use('/api/payments', paymentRoutes);  // Mantén esta línea aquí
 
 app.use(
   session({
@@ -57,7 +60,6 @@ app.use('/api/carts', cartRoutes);
 import mockProducts from './utils/validator/mocking.js';
 app.use('/mockingproducts', mockProducts);
 
-// Swagger setup
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',

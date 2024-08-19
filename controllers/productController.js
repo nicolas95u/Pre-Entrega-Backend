@@ -1,10 +1,12 @@
-import ProductManager from "../dao/mongoDb/ProductManager.js";
+import ProductManager from "../dao/mongoDb/ProductManagerMongo.js";
 import {
   validateNumberFields,
   validateStringFields,
   validateArrayOfStringsField,
 } from "../utils/validator/index.js";
 import logger from "../config/logger.js";
+import nodemailer from 'nodemailer';  
+import User from '../models/user.js'; 
 
 const productManager = new ProductManager();
 
@@ -45,9 +47,6 @@ const createProduct = async (req, res) => {
 };
 
 const addReview = async (req, res) => {
-  const { pid } = req.params;
-  const { rating, comment } = req.body;
-
   try {
     logger.info("Revisión creada correctamente.");
     res.status(201).json({ message: "Revisión creada correctamente :)" });
@@ -167,6 +166,11 @@ const deleteProduct = async (req, res) => {
       return res.status(403).json({ error: "No tienes permiso para eliminar este producto" });
     }
 
+    const owner = await User.findOne({ email: product.owner });
+    if (owner && owner.role === 'premium') {
+      sendDeletionEmail(owner.email, product.title);
+    }
+
     await productManager.deleteProduct(productId);
     logger.info("Producto eliminado correctamente.");
     res.json({ message: "Producto eliminado correctamente." });
@@ -174,6 +178,31 @@ const deleteProduct = async (req, res) => {
     logger.error("Error al eliminar producto:", error);
     res.status(500).json({ error: "Error al eliminar producto" });
   }
+};
+
+const sendDeletionEmail = (email, productName) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Producto eliminado',
+    text: `Tu producto "${productName}" ha sido eliminado del catálogo.`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      logger.error('Error al enviar correo:', error);
+    } else {
+      logger.info('Correo enviado:', info.response);
+    }
+  });
 };
 
 const getProductDescription = async (req, res) => {
@@ -195,7 +224,7 @@ const getProductDescription = async (req, res) => {
 const getProductsWithPagination = async (req, res) => {
   try {
     const { page = 1, limit = 10, sort, category, availability } = req.query;
-    let query = {};
+    const query = {};
 
     if (category) {
       query.category = category;
@@ -204,7 +233,7 @@ const getProductsWithPagination = async (req, res) => {
       query.availability = availability;
     }
 
-    let sortQuery = {};
+    const sortQuery = {};
     if (sort === "price") {
       sortQuery.price = 1;
     } else if (sort === "-price") {

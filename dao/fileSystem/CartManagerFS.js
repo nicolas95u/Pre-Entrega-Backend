@@ -1,6 +1,7 @@
 import fs from 'fs';
+import logger from '/config/logger';
 
-class CartManager {
+class CartManagerFS {
   constructor(filePath) {
     this.filePath = filePath;
     this.carts = [];
@@ -12,7 +13,7 @@ class CartManager {
       const data = fs.readFileSync(this.filePath, "utf8");
       this.carts = JSON.parse(data);
     } catch (error) {
-      console.error("Error loading carts:", error);
+      logger.error("Error loading carts:", error);
       throw new Error("Unable to load carts");
     }
   }
@@ -20,9 +21,9 @@ class CartManager {
   saveCarts() {
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(this.carts, null, 2));
-      console.log("Carts saved successfully.");
+      logger.info("Carts saved successfully.");
     } catch (error) {
-      console.error("Error saving carts:", error);
+      logger.error("Error saving carts:", error);
       throw new Error("Unable to save carts");
     }
   }
@@ -58,4 +59,4 @@ class CartManager {
   }
 }
 
-export default CartManager;
+export default CartManagerFS;

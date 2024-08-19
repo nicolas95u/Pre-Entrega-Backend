@@ -1,6 +1,7 @@
 import Cart from "../../models/carts.js";
 import Product from "../../models/products.js";
 import { validateObjectId } from "../../utils/validator/objectId.utils.js";
+import logger from '../../config/logger.js';
 
 class CartManager {
   async createCart(userId) {
@@ -16,7 +17,7 @@ class CartManager {
 
       return cart._id;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw new Error("Error al crear carrito");
     }
   }
@@ -25,10 +26,10 @@ class CartManager {
     try {
       const cart = new Cart(cartData);
       await cart.save();
-      console.log("Carrito creado correctamente.");
+      logger.info("Carrito creado correctamente.");
       return cart;
     } catch (error) {
-      console.error("Error al crear el carrito:", error);
+      logger.error("Error al crear el carrito:", error);
       throw new Error("No se pudo crear el carrito");
     }
   }
@@ -37,7 +38,7 @@ class CartManager {
     try {
       return await Cart.find();
     } catch (error) {
-      console.error("Error al obtener el carrito:", error);
+      logger.error("Error al obtener el carrito:", error);
       throw new Error("No se pudo obtener el carrito");
     }
   }
@@ -46,7 +47,7 @@ class CartManager {
     try {
       return await Cart.findById(id).populate("products.product");
     } catch (error) {
-      console.error("Error al obtener el carrito:", error);
+      logger.error("Error al obtener el carrito:", error);
       throw new Error("No se pudo obtener el carrito");
     }
   }
@@ -70,8 +71,8 @@ class CartManager {
 
       await cart.save();
       return cart;
-    } catch (error) {
-      console.error("Error al añadir el producto al carrito:", error);
+    } catch {
+      logger.error("Error al añadir el producto al carrito:", error);
       throw new Error("No se pudo añadir el producto al carrito");
     }
   }
@@ -79,7 +80,7 @@ class CartManager {
   async getProductById(productId) {
     try {
       return await Product.findById(productId);
-    } catch (error) {
+    } catch {
       throw new Error("Producto no encontrado");
     }
   }
@@ -92,7 +93,7 @@ class CartManager {
       }
       product.stock += quantity;
       await product.save();
-    } catch (error) {
+    } catch {
       throw new Error("Error al actualizar el stock del producto");
     }
   }

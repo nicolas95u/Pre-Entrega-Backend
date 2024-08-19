@@ -1,4 +1,5 @@
 import Product from "../../models/products.js";
+import logger from '../../config/logger.js';
 
 class ProductManager {
   async addProduct(productData) {
@@ -7,7 +8,7 @@ class ProductManager {
       await product.save();
       return product;
     } catch (error) {
-      console.error("Error adding product:", error);
+      logger.error("Error adding product:", error);
       throw new Error("Unable to add product");
     }
   }
@@ -17,7 +18,7 @@ class ProductManager {
       await Product.findByIdAndDelete(productId);
       return { message: "Product deleted successfully" };
     } catch (error) {
-      console.error("Error deleting product:", error);
+      logger.error("Error deleting product:", error);
       throw new Error("Unable to delete product");
     }
   }
@@ -26,7 +27,7 @@ class ProductManager {
     try {
       return await Product.paginate(query, options);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      logger.error("Error fetching products:", error);
       throw new Error("Unable to fetch products");
     }
   }
@@ -35,7 +36,7 @@ class ProductManager {
     try {
       return await Product.findById(productId);
     } catch (error) {
-      console.error("Error fetching product by ID:", error);
+      logger.error("Error fetching product by ID:", error);
       throw new Error("Unable to fetch product by ID");
     }
   }
@@ -44,7 +45,7 @@ class ProductManager {
     try {
       return await Product.findByIdAndUpdate(productId, updateData, { new: true });
     } catch (error) {
-      console.error("Error updating product:", error);
+      logger.error("Error updating product:", error);
       throw new Error("Unable to update product");
     }
   }
@@ -59,7 +60,7 @@ class ProductManager {
       await product.save();
       return reviewData;
     } catch (error) {
-      console.error("Error adding review:", error);
+      logger.error("Error adding review:", error);
       throw new Error("Unable to add review");
     }
   }
@@ -72,7 +73,7 @@ class ProductManager {
       }
       return product.description;
     } catch (error) {
-      console.error("Error fetching product description:", error);
+      logger.error("Error fetching product description:", error);
       throw new Error("Unable to fetch product description");
     }
   }

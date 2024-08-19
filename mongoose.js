@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import logger from '/config/logger'; 
 
 mongoose.connect('mongodb+srv://nicolas95u:<XRxK5mr9G9Q0OZxV>@cluster0.84npekh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
@@ -7,10 +8,10 @@ mongoose.connect('mongodb+srv://nicolas95u:<XRxK5mr9G9Q0OZxV>@cluster0.84npekh.m
 
 const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.on('error', logger.error.bind(console, 'MongoDB connection error:'));
 
 db.once('open', () => {
-  console.log('Connected to MongoDB');
+  logger.info('Connected to MongoDB');
 });
 
 export default mongoose;
