@@ -1,6 +1,6 @@
-const logger = require("../config/logger");
+import logger from "../config/logger";
 
-exports.loggerTest = (req, res) => {
+const loggerTest = (req, res) => {
   logger.debug("Este es un mensaje de debug");
   logger.http("Este es un mensaje de http");
   logger.info("Este es un mensaje de info");
@@ -10,3 +10,4 @@ exports.loggerTest = (req, res) => {
   
   res.send("Logs generados. Verifica la consola y los archivos de logs.");
 };
+export default {loggerTest}

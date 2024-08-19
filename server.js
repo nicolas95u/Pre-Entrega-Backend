@@ -15,12 +15,13 @@ import errorHandler from './utils/validator/errorHandler.js';
 import logger from './config/logger.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
-import ProductManager from './dao/mongoDb/ProductManagerMongo.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import mainRouter from './routes/mainRouter.js';
 import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
-import viewsRoutes from './routes/viewsRoutes.js';  // Asegúrate de que esta ruta esté correcta
+import sessionRoutes from './routes/sessionRoutes.js';
+import viewsRoutes from './routes/viewsRoutes.js';
+import mockProducts from './utils/validator/mocking.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -32,8 +33,6 @@ app.use(express.json());
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
-
-app.use('/api/payments', paymentRoutes);
 
 app.use(
   session({
@@ -57,7 +56,9 @@ connectToDatabase(process.env.MONGO_URL);
 app.use('/', mainRouter);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
-app.use('/', viewsRoutes);  // Importación de vistas
+app.use('/api/payments', paymentRoutes);
+app.use('/session', sessionRoutes);
+app.use('/', viewsRoutes);
 
 const swaggerOptions = {
   definition: {

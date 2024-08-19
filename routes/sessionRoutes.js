@@ -1,43 +1,44 @@
-const express = require("express");
+import express from 'express';
+import sessionController from '../controllers/sessionController.js';
+import isAdmin from '../middlewares/validation/isAdmin.middleware.js';
+import isUser from '../middlewares/validation/isUser.middleware.js';
+import forgotPasswordController from '../controllers/forgotPasswordController.js';
+import passport from 'passport';
+
 const router = express.Router();
-const sessionController = require("../controllers/sessionController");
-const isAdmin = require("../middlewares/validation/isAdmin.middleware");
-const isUser = require("../middlewares/validation/isUser.middleware"); // Importar middleware isUser
-const passport = require("passport");
-const forgotPasswordController = require('../controllers/forgotPasswordController');
 
 router.post(
-  "/register",
-  passport.authenticate("register", { failureRedirect: "/failregister" }),
+  '/register',
+  passport.authenticate('register', { failureRedirect: '/failregister' }),
   sessionController.register
 );
 
-router.get("/failregister", sessionController.failRegister);
+router.get('/failregister', sessionController.failRegister);
 
 router.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/session/faillogin" }),
+  '/login',
+  passport.authenticate('login', { failureRedirect: '/session/faillogin' }),
   sessionController.login
 );
 
-router.get("/faillogin", sessionController.failLogin);
+router.get('/faillogin', sessionController.failLogin);
 
-router.get("/adminOnlyRoute", isAdmin, sessionController.adminOnlyRoute);
+router.get('/adminOnlyRoute', isAdmin, sessionController.adminOnlyRoute);
 
-router.get("/logout", sessionController.logout);
+router.get('/logout', sessionController.logout);
 
-router.get("/github", sessionController.githubAuth);
+router.get('/github', sessionController.githubAuth);
 
 router.get(
-  "/githubcallback",
+  '/githubcallback',
   sessionController.githubCallback,
   sessionController.githubCallbackSuccess
 );
 
-router.get("/current", isUser, sessionController.getCurrentUser); 
+router.get('/current', isUser, sessionController.getCurrentUser);
 
-router.post('/forgot-password', forgotPasswordController.sendResetPasswordEmail); // Corregido el nombre de la función
+router.post('/forgot-password', forgotPasswordController.sendResetPasswordEmail);
 
-router.post('/reset-password/:token', forgotPasswordController.resetPassword); // Añadida la ruta para resetear la contraseña
+router.post('/reset-password/:token', forgotPasswordController.resetPassword);
 
-module.exports = router;
+export default router;

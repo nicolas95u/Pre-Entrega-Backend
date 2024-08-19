@@ -1,10 +1,10 @@
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const sendEmail = require("../utils/mailer");
-const logger = require("../config/logger");
+import User from "../models/user.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import sendEmail from "../utils/mailer.js";  // Usar require para importar sendEmail
+import logger from "../config/logger.js";
 
-exports.sendResetPasswordEmail = async (req, res) => {
+const sendResetPasswordEmail = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -30,7 +30,7 @@ exports.sendResetPasswordEmail = async (req, res) => {
   }
 };
 
-exports.resetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { newPassword } = req.body;
   try {
@@ -63,3 +63,4 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+export default {sendResetPasswordEmail,resetPassword}
