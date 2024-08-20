@@ -1,14 +1,14 @@
-const User = require('../../models/user');
-const { isValidPassword } = require('../../utils/validator/authentication.utils');
-import logger from '/config/logger';
+import User from '../../models/user.js';
+import { isValidPassword } from '../../utils/validator/authentication.utils.js';
+import logger  from "../../config/logger.js"
 
 class UserManager {
-  async registerUser(firstName, lastName, email, age, password) {
-    try {
-      const newUser = new User({ firstName, lastName, email, age, password });
-      await newUser.save();
+  async registerUser(firstName, lastName, email, password) {
+    try { 
+      const newUser = new User({ firstName, lastName, email, password });
+  
       return newUser;
-    } catch (error) {
+    } catch (error) {console.log (error.message)
       throw new Error(error.message);
     }
   }
@@ -53,4 +53,4 @@ class UserManager {
   }
 }
 
-module.exports = new UserManager();
+export default new UserManager();

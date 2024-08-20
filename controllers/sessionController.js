@@ -4,25 +4,9 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 
 const register = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    let user = await User.findOne({ email });
-
-    if (user) {
-      logger.warn(`User already exists: ${email}`);
-      return res.status(400).json({ error: "User already exists" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({ email, password: hashedPassword });
-    await user.save();
-
-    logger.info(`User registered successfully: ${email}`);
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    logger.error("Error in register: ", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+  logger.info(`User register: ${req.user.email}`);
+  
+  res.status(201).render("login", { message: "Login register" });
 };
 
 const failRegister = (req, res) => {

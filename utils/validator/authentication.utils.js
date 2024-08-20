@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt"
 const validateAuthentication = (req, res, next) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ error: 'User not authenticated' });
@@ -5,4 +6,13 @@ const validateAuthentication = (req, res, next) => {
   next();
 };
 
-export default validateAuthentication;
+
+const createHash = (password) => 
+  
+  bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
+
+  const isValidPassword = (user, password) =>
+  bcrypt.compareSync(password, user.password);
+
+export  {validateAuthentication,createHash,isValidPassword};

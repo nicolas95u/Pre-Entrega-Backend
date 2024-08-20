@@ -9,7 +9,7 @@ const productManager = new ProductManager(); // chequear
 
 const errorHandler = (res, error) => {
     logger.error('Error:', error);
-    res.status(500).json({ error: error.message || 'Error desconocido' });
+    res.status(500).json({ error: error.message || 'Error desconocido :D' });
 };
 
 app.get('/products', async (req, res) => {
