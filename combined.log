@@ -547,3 +547,129 @@
 {"level":"info","message":"User register: isdhfoishdgoi@pan.com"}
 {"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
 {"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
+{"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
+{"level":"info","message":"User logged out successfully"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
+{"level":"info","message":"User logged out successfully"}
+{"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
+{"level":"info","message":"User logged out successfully"}
+{"level":"info","message":"GET / - Homepage"}
+{"level":"info","message":"User register: mandarina@gmail.com"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"User register: mandarinaa@gmail.com"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"User register: mandarinaa@gmail.com"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"User register: mandarinaa@gmail.com"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Parameter \"filter\" to findOne() must be an object, got \"mandarinaa@gmail.com\" (type string)"}
+{"level":"info","message":"Parameter \"filter\" to findOne() must be an object, got \"mandarinaa@gmail.com\" (type string)"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"User register: galactico@gmail.com"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"GET / - Homepage"}
+{"level":"info","message":"User register: pepino21@gmail.com"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"warn","message":"Fail login endpoint hit"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"warn","message":"Fail login endpoint hit"}

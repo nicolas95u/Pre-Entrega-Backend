@@ -6,7 +6,7 @@ class UserManager {
   async registerUser(firstName, lastName, email, password) {
     try { 
       const newUser = new User({ firstName, lastName, email, password });
-  
+  await newUser.save()
       return newUser;
     } catch (error) {console.log (error.message)
       throw new Error(error.message);

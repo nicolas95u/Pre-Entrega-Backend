@@ -36,7 +36,7 @@ const logout = (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
     logger.info("User logged out successfully");
-    res.status(200).json({ message: "Logout successful" });
+    res.status(200).render("login",{ message: "Logout successful" });
   });
 };
 
@@ -46,7 +46,7 @@ const githubCallback = passport.authenticate("github", { failureRedirect: "/sess
 
 const githubCallbackSuccess = (req, res) => {
   logger.info(`GitHub login successful for user: ${req.user.email}`);
-  res.redirect("/profile");
+  res.render("profile");
 };
 
 const getCurrentUser = (req, res) => {

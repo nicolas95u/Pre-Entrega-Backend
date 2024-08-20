@@ -20,9 +20,8 @@ import userManager from "../dao/mongoDb/UserManager.js"; // Importar directament
           const { firstName, lastName, email,} = req.body;
 
           let user = await userManager.findUserByEmail(email); // Ajustar llamada a función
-          console.log (user)
+ 
           if (user) {
-            console.log("User already exists");
             return done(null, false);
           }
 
@@ -33,7 +32,6 @@ import userManager from "../dao/mongoDb/UserManager.js"; // Importar directament
             email,
             hashedPassword
           );
-console.log (result)
           return done(null, result);
         } catch (error) {
           return done("Error al registrar el usuario: " + error);
@@ -66,7 +64,9 @@ console.log (result)
             console.log("User doesn't exist");
             return done(null, false);
           }
-          if (!isValidPassword(user, password)) return done(null, false);
+          const hashedPassword = createHash(password);
+          if (!isValidPassword(user, hashedPassword)) return done(null, false);
+          console.log("pancito2")
           return done(null, user);
         } catch (error) {
           return done(error);
