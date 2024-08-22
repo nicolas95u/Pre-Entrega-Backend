@@ -1,18 +1,15 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 const validateAuthentication = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'User not authenticated' });
+    return res.status(401).json({ error: "User not authenticated" });
   }
   next();
 };
 
-
-const createHash = (password) => 
-  
+const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
+const isValidPassword = (user, password) =>
+  bcrypt.compare(password, user.password);
 
-  const isValidPassword = (user, password) =>
-  bcrypt.compareSync(password, user.password);
-
-export  {validateAuthentication,createHash,isValidPassword};
+export { validateAuthentication, createHash, isValidPassword };

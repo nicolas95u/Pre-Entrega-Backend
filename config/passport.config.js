@@ -1,10 +1,13 @@
 import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
-import {createHash,isValidPassword} from "../utils/validator/authentication.utils.js";
+import {
+  createHash,
+  isValidPassword,
+} from "../utils/validator/authentication.utils.js";
 import userManager from "../dao/mongoDb/UserManager.js"; // Importar directamente la instancia
 
- const initializePassport = () => {
+const initializePassport = () => {
   const LocalStrategy = local.Strategy;
 
   passport.use(
@@ -15,17 +18,18 @@ import userManager from "../dao/mongoDb/UserManager.js"; // Importar directament
         passwordField: "password",
         passReqToCallback: true,
       },
-      async (req,username,password, done) => {
+      async (req, username, password, done) => {
         try {
-          const { firstName, lastName, email,} = req.body;
+          const { firstName, lastName, email } = req.body;
 
           let user = await userManager.findUserByEmail(email); // Ajustar llamada a función
- 
+
           if (user) {
             return done(null, false);
           }
 
           const hashedPassword = createHash(password);
+
           let result = await userManager.registerUser(
             firstName,
             lastName,
@@ -57,16 +61,17 @@ import userManager from "../dao/mongoDb/UserManager.js"; // Importar directament
     "login",
     new LocalStrategy(
       { usernameField: "email" },
-      async (email, password, done) => {
+      async ( email, password, done) => {
         try {
           const user = await userManager.findUserByEmail(email); // Ajustar llamada a función
           if (!user) {
             console.log("User doesn't exist");
             return done(null, false);
           }
-          const hashedPassword = createHash(password);
-          if (!isValidPassword(user, hashedPassword)) return done(null, false);
-          console.log("pancito2")
+
+          console.log(isValidPassword(user, password));
+          if (!isValidPassword(user, password)) return done(null, false);
+          
           return done(null, user);
         } catch (error) {
           return done(error);
@@ -105,4 +110,4 @@ import userManager from "../dao/mongoDb/UserManager.js"; // Importar directament
     )
   );
 };
-export default initializePassport
+export default initializePassport;

@@ -16,6 +16,7 @@ const renderProfile = (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
   }
+  console.log("quienmemanda")
   res.render("profile", { user: req.session.user });
 };
 

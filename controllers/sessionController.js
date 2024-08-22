@@ -6,7 +6,7 @@ import passport from "passport";
 const register = async (req, res) => {
   logger.info(`User register: ${req.user.email}`);
   
-  res.status(201).render("login", { message: "Login register" });
+  res.status(201).redirect("/login");
 };
 
 const failRegister = (req, res) => {
@@ -15,8 +15,14 @@ const failRegister = (req, res) => {
 };
 
 const login = (req, res) => {
-  logger.info(`User logged in: ${req.user.email}`);
-  res.status(200).json({ message: "Login successful" });
+  const {user}=req
+  logger.info(`User logged in: ${user.email}`);
+  req.session.user = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+  };
+  res.status(200).redirect("/profile");
 };
 
 const failLogin = (req, res) => {
@@ -36,7 +42,7 @@ const logout = (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
     logger.info("User logged out successfully");
-    res.status(200).render("login",{ message: "Logout successful" });
+    res.status(200).redirect("/login");
   });
 };
 
@@ -46,7 +52,7 @@ const githubCallback = passport.authenticate("github", { failureRedirect: "/sess
 
 const githubCallbackSuccess = (req, res) => {
   logger.info(`GitHub login successful for user: ${req.user.email}`);
-  res.render("profile");
+  res.redirect("/profile");
 };
 
 const getCurrentUser = (req, res) => {
