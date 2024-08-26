@@ -60,7 +60,7 @@ const githubCallbackSuccess = (req, res) => {
     firstName: req.user.firstName || req.user.username,
     lastName: req.user.lastName || "",
     email: req.user.email,
-    role: req.user.role // Asegurando que el rol del usuario se guarde en la sesión para GitHub
+    role: req.user.role 
   };
   res.redirect("/profile");
 };
