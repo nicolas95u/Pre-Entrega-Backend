@@ -1,6 +1,5 @@
 {
-    "require": ["esm"],
-    "extension": ["js"],
-    "spec": "test/**/*.test.js"
-  }
-  
+   "require": "esm"
+  ,
+  "spec": "test/**/*.test.js"
+}

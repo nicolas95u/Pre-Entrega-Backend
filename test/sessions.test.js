@@ -1,10 +1,9 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../server.js'; // Ajusta esta ruta según tu estructura
-
-const { expect } = chai;
+import app from '../server.js';
 
 chai.use(chaiHttp);
+const { expect } = chai;
 
 describe('Sessions API', () => {
   it('should register a user', (done) => {

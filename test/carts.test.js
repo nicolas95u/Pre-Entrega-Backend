@@ -1,8 +1,6 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../server.js'; // Asegúrate de que esta ruta es correcta y que el archivo server.js es un módulo ES.
-
-const { expect } = chai;
+import app from '../server.js';
 
 chai.use(chaiHttp);
 
@@ -11,10 +9,11 @@ describe('Carts API', () => {
     chai.request(app)
       .post('/api/carts/add-to-cart')
       .send({
-        productId: 'someProductId',
+        productId: 'someProductId', // Cambiar a un ID de producto válido en tus pruebas
         quantity: 2
       })
       .end((err, res) => {
+        if (err) return done(err);
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('message').eql('Producto agregado al carrito');
         done();
@@ -22,10 +21,11 @@ describe('Carts API', () => {
   });
 
   it('should get a cart by id', (done) => {
-    const cartId = 'someValidCartId';
+    const cartId = 'someValidCartId'; // Cambiar a un ID de carrito válido en tus pruebas
     chai.request(app)
       .get(`/api/carts/${cartId}`)
       .end((err, res) => {
+        if (err) return done(err);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         done();
@@ -33,10 +33,11 @@ describe('Carts API', () => {
   });
 
   it('should finalize purchase and generate a ticket', (done) => {
-    const cartId = 'someValidCartId';
+    const cartId = 'someValidCartId'; // Cambiar a un ID de carrito válido en tus pruebas
     chai.request(app)
       .post(`/api/carts/${cartId}/purchase`)
       .end((err, res) => {
+        if (err) return done(err);
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('code');
         done();

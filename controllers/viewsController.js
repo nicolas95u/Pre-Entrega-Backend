@@ -1,5 +1,5 @@
 import ProductManager from "../dao/mongoDb/ProductManagerMongo.js";
-import User from '../models/user.js'; 
+import User from '../models/user.js';
 import logger from '../config/logger.js';
 
 const productManager = new ProductManager();
@@ -16,7 +16,6 @@ const renderProfile = (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
   }
-  console.log("quienmemanda")
   res.render("profile", { user: req.session.user });
 };
 

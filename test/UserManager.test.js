@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const UserManager = require('../dao/mongoDb/UserManager');
-const { createHash } = require('../utils/validator/authentication.utils');
-import logger from '/config/logger';
+import mongoose from 'mongoose';
+import UserManager from '../dao/mongoDb/UserManager.js';
+import { createHash } from '../utils/validator/authentication.utils.js';
+import logger from '../config/logger.js';
 
 describe('UserManager', () => {
   beforeAll(async () => {

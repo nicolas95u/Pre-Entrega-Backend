@@ -21,7 +21,7 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
 import viewsRoutes from './routes/viewsRoutes.js';
-import mockProducts from './utils/validator/mocking.js';
+import userRoutes from './routes/userRoutes.js';  // Asegúrate de añadir esta línea
 
 const app = express();
 const server = http.createServer(app);
@@ -59,6 +59,7 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/session', sessionRoutes);
 app.use('/', viewsRoutes);
+app.use('/api/users', userRoutes);  // Añadir esta línea
 
 const swaggerOptions = {
   definition: {
@@ -85,3 +86,5 @@ logger.info(`Server is starting on port ${PORT}`);
 server.listen(PORT, () => {
   logger.info(`Servidor escuchando en el puerto ${PORT}`);
 });
+
+export default app;

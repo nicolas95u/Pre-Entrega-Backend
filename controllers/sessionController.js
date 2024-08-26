@@ -1,11 +1,8 @@
 import logger from "../config/logger.js";
-import User from "../models/user.js";
-import bcrypt from "bcrypt";
 import passport from "passport";
 
 const register = async (req, res) => {
   logger.info(`User register: ${req.user.email}`);
-  
   res.status(201).redirect("/login");
 };
 
@@ -15,12 +12,13 @@ const failRegister = (req, res) => {
 };
 
 const login = (req, res) => {
-  const {user}=req
+  const { user } = req;
   logger.info(`User logged in: ${user.email}`);
   req.session.user = {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
+    role: user.role // Asegurando que el rol del usuario se guarde en la sesión
   };
   res.status(200).redirect("/profile");
 };
@@ -41,8 +39,14 @@ const logout = (req, res) => {
       logger.error("Error during logout: ", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
-    logger.info("User logged out successfully");
-    res.status(200).redirect("/login");
+    req.session.destroy(err => {
+      if (err) {
+        logger.error("Error destroying session: ", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      logger.info("User logged out successfully");
+      res.status(200).redirect("/login");
+    });
   });
 };
 
@@ -52,6 +56,12 @@ const githubCallback = passport.authenticate("github", { failureRedirect: "/sess
 
 const githubCallbackSuccess = (req, res) => {
   logger.info(`GitHub login successful for user: ${req.user.email}`);
+  req.session.user = {
+    firstName: req.user.firstName || req.user.username,
+    lastName: req.user.lastName || "",
+    email: req.user.email,
+    role: req.user.role // Asegurando que el rol del usuario se guarde en la sesión para GitHub
+  };
   res.redirect("/profile");
 };
 
@@ -65,4 +75,15 @@ const getCurrentUser = (req, res) => {
   }
 };
 
-export default {register,failRegister,login,failLogin,adminOnlyRoute,logout,githubCallbackSuccess,getCurrentUser,githubAuth,githubCallback}
+export default {
+  register,
+  failRegister,
+  login,
+  failLogin,
+  adminOnlyRoute,
+  logout,
+  githubCallbackSuccess,
+  getCurrentUser,
+  githubAuth,
+  githubCallback,
+};

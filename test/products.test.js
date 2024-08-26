@@ -1,8 +1,6 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../server.js'; // Ajusta esta ruta según tu estructura
-
-const { expect } = chai;
+import app from '../server.js';
 
 chai.use(chaiHttp);
 
@@ -11,6 +9,7 @@ describe('Products API', () => {
     chai.request(app)
       .get('/api/products')
       .end((err, res) => {
+        if (err) return done(err);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
         done();
@@ -31,6 +30,7 @@ describe('Products API', () => {
         status: true
       })
       .end((err, res) => {
+        if (err) return done(err);
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('message').eql('Producto creado correctamente :)');
         done();
@@ -38,10 +38,11 @@ describe('Products API', () => {
   });
 
   it('should get a product by id', (done) => {
-    const productId = 'someValidProductId';
+    const productId = 'someValidProductId'; // Cambiar a un ID válido en tus pruebas
     chai.request(app)
       .get(`/api/products/${productId}`)
       .end((err, res) => {
+        if (err) return done(err);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         done();

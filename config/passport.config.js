@@ -61,7 +61,7 @@ const initializePassport = () => {
     "login",
     new LocalStrategy(
       { usernameField: "email" },
-      async ( email, password, done) => {
+      async (email, password, done) => {
         try {
           const user = await userManager.findUserByEmail(email); // Ajustar llamada a función
           if (!user) {
@@ -69,7 +69,6 @@ const initializePassport = () => {
             return done(null, false);
           }
 
-          console.log(isValidPassword(user, password));
           if (!isValidPassword(user, password)) return done(null, false);
           
           return done(null, user);
@@ -96,8 +95,7 @@ const initializePassport = () => {
               profile._json.firstName || profile.username,
               profile._json.lastName || "",
               profile._json.email,
-              null, // Age - Puedes pasar cualquier valor aquí
-              accessToken // Guardar el token de acceso para GitHub
+              createHash(accessToken) // Puedes cambiar esto si prefieres no usar hash aquí
             );
             done(null, result);
           } else {
@@ -110,4 +108,5 @@ const initializePassport = () => {
     )
   );
 };
+
 export default initializePassport;

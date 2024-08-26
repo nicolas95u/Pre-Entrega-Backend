@@ -881,3 +881,18 @@
 {"level":"info","message":"User logged in: sandra23@gmail.com"}
 {"level":"info","message":"User logged out successfully"}
 {"level":"info","message":"GitHub login successful for user: nicolas95u@gmail.com"}
+<<<<<<< HEAD
+=======
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
+>>>>>>> a192657 (nueva pc)
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}

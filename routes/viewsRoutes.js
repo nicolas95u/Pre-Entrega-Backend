@@ -1,6 +1,6 @@
 import express from "express";
 import viewsController from "../controllers/viewsController.js";
-import isAdmin from '../middlewares/validation/isAdmin.middleware.js'; 
+import isAdmin from '../middlewares/validation/isAdmin.middleware.js';
 
 const router = express.Router();
 
