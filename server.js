@@ -5,6 +5,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import { engine } from 'express-handlebars';
+import Handlebars from 'handlebars'; // Importación adicional
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
@@ -30,7 +31,17 @@ const io = new Server(server);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.engine('handlebars', engine());
+// Configuración del motor de vistas Handlebars
+app.engine(
+  'handlebars',
+  engine({
+    handlebars: Handlebars.create({
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    }),
+    extname: '.handlebars',
+  })
+);
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
