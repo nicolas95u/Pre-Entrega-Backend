@@ -21,7 +21,7 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
 import viewsRoutes from './routes/viewsRoutes.js';
-import userRoutes from './routes/userRoutes.js';  // Asegúrate de añadir esta línea
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -59,7 +59,7 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/session', sessionRoutes);
 app.use('/', viewsRoutes);
-app.use('/api/users', userRoutes);  // Añadir esta línea
+app.use('/api/users', userRoutes);
 
 const swaggerOptions = {
   definition: {

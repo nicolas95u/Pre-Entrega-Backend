@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil de Usuario</title>
 </head>
 <body>
-    <h1>Perfil de Usuario</h1>
-    <p>Nombre: {{user.firstName}} {{user.lastName}}</p>
-    <p>Correo electrónico: {{user.email}}</p>
-    <p>Tipo de usuario: {{user.role}}</p> 
-    <form action="/session/logout" method="GET">
-        <button type="submit">Cerrar Sesión</button>
-    </form>
+  <h1>Bienvenido, {{user.firstName}}</h1>
+  <p>Email: {{user.email}}</p>
+
+  <h2>Acciones</h2>
+  <ul>
+    <li><a href="/products">Ver Productos</a></li> 
+    <li><a href="/cart">Ver Carrito</a></li> 
 </body>
 </html>

@@ -60,6 +60,24 @@ const renderHome = async (req, res) => {
   }
 };
 
+const renderProducts = async (req, res) => {
+  try {
+    const products = await productManager.getProducts();
+    res.render("products", { products });
+  } catch {
+    res.status(500).json({ error: "Error al obtener productos" });
+  }
+};
+
+const renderCart = async (req, res) => {
+  try {
+    const cart = await productManager.getCart(req.session.user._id);
+    res.render("cart", { cart });
+  } catch {
+    res.status(500).json({ error: "Error al obtener el carrito" });
+  }
+};
+
 const renderRealTimeProducts = (req, res) => {
   res.render("realTimeProducts");
 };
@@ -81,4 +99,6 @@ export default {
   renderHome,
   renderRealTimeProducts,
   renderUserManagement,
+  renderProducts, 
+  renderCart, 
 };

@@ -10,5 +10,7 @@ router.get("/profile", viewsController.renderProfile);
 router.get("/", viewsController.renderHome);
 router.get("/realtimeproducts", viewsController.renderRealTimeProducts);
 router.get('/admin/users', isAdmin, viewsController.renderUserManagement);
+router.get('/products', viewsController.renderProducts);
+router.get('/cart', viewsController.renderCart); 
 
 export default router;
