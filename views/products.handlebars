@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Productos</title>
-</head>
-<body>
-  <h1>Lista de Productos</h1>
-  <ul>
-    {{#each products.docs}}
-    <li>
-      <h2>{{title}}</h2>
-      <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
-      <p>Precio: {{price}}</p>
-      <form action="/add-to-cart" method="POST">
-        <input type="hidden" name="productId" value="{{_id}}">
-        <button type="submit">Agregar al Carrito</button>
-      </form>
-      <form action="/add-to-favorites" method="POST">
-        <input type="hidden" name="productId" value="{{_id}}">
-        <button type="submit">Agregar a Favoritos</button>
-      </form>
-    </li>
-    {{/each}}
-  </ul>
-</body>
-</html>
+<ul>
+  {{#each products.docs}}
+  {{log this}} 
+  <li>
+    <h2>{{title}}</h2>
+    <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
+    <p>Precio: {{price}}</p>
+    <form action="/add-to-cart" method="POST">
+      <input type="hidden" name="productId" value="{{_id}}">
+      <button type="submit">Agregar al Carrito</button>
+    </form>
+    <form action="/add-to-favorites" method="POST">
+      <input type="hidden" name="productId" value="{{_id}}">
+      <button type="submit">Agregar a Favoritos</button>
+    </form>
+  </li>
+  {{/each}}
+</ul>
