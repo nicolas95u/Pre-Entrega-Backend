@@ -14,11 +14,11 @@
       <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
       <p>Precio: {{price}}</p>
       <form action="/add-to-cart" method="POST">
-        <input type="hidden" name="productId" value="{{id}}">
+      <input type="hidden" name="productId" value="{{_id}}">
         <button type="submit">Agregar al Carrito</button>
       </form>
       <form action="/add-to-favorites" method="POST">
-        <input type="hidden" name="productId" value="{{id}}">
+     <input type="hidden" name="productId" value="{{_id}}">
         <button type="submit">Agregar a Favoritos</button>
       </form>
     </li>
