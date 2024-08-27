@@ -63,6 +63,7 @@ const renderHome = async (req, res) => {
 const renderProducts = async (req, res) => {
   try {
     const products = await productManager.getProducts();
+    console.log(products);
     res.render("products", { products });
   } catch {
     res.status(500).json({ error: "Error al obtener productos" });
