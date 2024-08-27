@@ -63,12 +63,13 @@ const renderHome = async (req, res) => {
 const renderProducts = async (req, res) => {
   try {
     const products = await productManager.getProducts();
-    console.log(products);
+    console.log("Productos que se envían a la vista:", products);
     res.render("products", { products });
-  } catch {
+  } catch (error) {
     res.status(500).json({ error: "Error al obtener productos" });
   }
 };
+
 
 const renderCart = async (req, res) => {
   try {
