@@ -22,6 +22,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
 import viewsRoutes from './routes/viewsRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import { initiatePayment } from './controllers/paymentController.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -39,7 +40,6 @@ app.engine('handlebars', engine({helpers: {
   json: function (context) {
     return JSON.stringify(context);
   },
-
 }}));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
@@ -70,6 +70,9 @@ app.use('/api/payments', paymentRoutes);
 app.use('/session', sessionRoutes);
 app.use('/', viewsRoutes);
 app.use('/api/users', userRoutes);
+
+
+app.post('/checkout', initiatePayment);
 
 const swaggerOptions = {
   definition: {

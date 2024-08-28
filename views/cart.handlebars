@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito de Compras</title>
   <style>
-    /* Estilos para el botón */
     .buy-button {
       display: inline-block;
-      background-color: #808080; /* Color gris */
+      background-color: #808080;
       color: white;
       padding: 10px 20px;
       text-align: center;
@@ -21,15 +20,12 @@
       cursor: pointer;
       font-size: 16px;
     }
-
-    /* Cambia el color al pasar el mouse */
     .buy-button:hover {
-      background-color: #666666; /* Gris más oscuro */
+      background-color: #666666;
     }
   </style>
 </head>
 <body>
- 
   <h1>Carrito de Compras</h1>
 
   <ul>
@@ -43,11 +39,11 @@
       </li>
     {{/each}}
   </ul>
-{{cart._doc._id}}
-  <!-- Botón de Comprar -->
-  <form action="http://localhost:8080/api/carts/{{cart._doc._id}}/purchase" method="POST">
-    <button type="submit" class="buy-button">Comprar</button>
-  </form>
 
+  <form action="/checkout" method="POST">
+    <input type="hidden" name="amount" value="{{calculatedAmount}}">
+    <input type="hidden" name="currency" value="usd">
+    <button type="submit" class="buy-button">Proceder al Pago</button>
+  </form>
 </body>
 </html>

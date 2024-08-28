@@ -1,7 +1,5 @@
-import Stripe from 'stripe';
+import stripe from '../config/stripe.config.js';
 import logger from '../config/logger.js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const initiatePayment = async (req, res) => {
   try {
@@ -26,7 +24,11 @@ export const initiatePayment = async (req, res) => {
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
 
-    res.json({ id: session.id });
+    res.render('stripe', {
+      sessionId: session.id,
+      STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+    });
+
   } catch (error) {
     logger.error('Error al iniciar el pago:', error);
     res.status(500).json({ error: 'No se pudo iniciar el pago' });

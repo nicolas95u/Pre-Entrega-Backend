@@ -12,6 +12,14 @@
         <input type="hidden" name="productId" value="{{_id}}">
         <button type="submit">Agregar a Favoritos</button>
       </form>
+    <form action="/checkout" method="POST">
+  <input type="hidden" name="productId" value="{{_id}}">
+  <input type="hidden" name="amount" value="{{price}}">
+  <input type="hidden" name="currency" value="usd"> <!-- Especifica la moneda aquí -->
+  <input type="hidden" name="quantity" value="1"> <!-- Especifica la cantidad aquí -->
+  <button type="submit">Comprar ahora</button>
+</form>
+
     </li>
   {{/each}}
 </ul>

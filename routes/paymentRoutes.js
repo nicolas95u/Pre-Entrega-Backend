@@ -3,7 +3,7 @@ import { initiatePayment, handleWebhook } from '../controllers/paymentController
 
 const router = express.Router();
 
-router.post('/create', initiatePayment);
+router.post('/create-session', initiatePayment);
 
 router.post('/webhook', handleWebhook);
 
