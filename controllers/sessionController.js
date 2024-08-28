@@ -18,7 +18,8 @@ const login = (req, res) => {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    role: user.role // Asegurando que el rol del usuario se guarde en la sesión
+    role: user.role,
+    _id: user._id
   };
   res.status(200).redirect("/profile");
 };

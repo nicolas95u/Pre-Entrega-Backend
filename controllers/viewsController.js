@@ -1,8 +1,10 @@
 import ProductManager from "../dao/mongoDb/ProductManagerMongo.js";
+import CartManager from "../dao/mongoDb/CartManagerMongo.js";
 import User from '../models/user.js';
 import logger from '../config/logger.js';
 
 const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 const renderRegister = (req, res) => {
   res.render("register");
@@ -27,18 +29,16 @@ const renderHome = async (req, res) => {
     const products = await productManager.getProducts();
 
     if (sort === "asc") {
-      products.sort((a, b) => a.price - b.price);
+      products.docs.sort((a, b) => a.price - b.price);
     } else if (sort === "desc") {
-      products.sort((a, b) => b.price - a.price);
+      products.docs.sort((a, b) => b.price - a.price);
     }
 
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedProducts = products.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(products.length / limit);
+    const paginatedProducts = products.docs.map(product => product.toObject());
+    const totalPages = Math.ceil(products.docs.length / limit);
 
     res.render("home", {
-      products: paginatedProducts,
+      products: { docs: paginatedProducts },
       totalPages,
       page,
       prevPage: page > 1 ? page - 1 : null,
@@ -55,7 +55,8 @@ const renderHome = async (req, res) => {
           : null,
       user: req.session.user,
     });
-  } catch {
+  } catch (error) {
+    logger.error("Error al obtener productos:", error);
     res.status(500).json({ error: "Error al obtener productos" });
   }
 };
@@ -63,19 +64,37 @@ const renderHome = async (req, res) => {
 const renderProducts = async (req, res) => {
   try {
     const products = await productManager.getProducts();
-    logger.info('Productos que se envían a la vista:', products);
-    res.render("products", { products });
+    const clonedProducts = products.docs.map(product => product.toObject());
+    logger.info('Productos que se envían a la vista:', clonedProducts);
+    res.render("products", { products: { docs: clonedProducts } });
   } catch (error) {
+    logger.error("Error al obtener productos:", error);
     res.status(500).json({ error: "Error al obtener productos" });
   }
 };
 
-
 const renderCart = async (req, res) => {
   try {
-    const cart = await productManager.getCart(req.session.user._id);
+    const userId = req.session.user._id;
+    
+    let cart = await cartManager.getCartByUserId(userId);
+
+    if (!cart) {
+      const cartId = await cartManager.createCart(userId);
+      cart = await cartManager.getCartById(cartId);
+    }
+   
+   cart = {
+    ...cart[0],
+    products: cart[0].products.map(productEntry => ({
+      quantity: productEntry.quantity,  // Extraemos y mantenemos quantity
+      product: JSON.parse(JSON.stringify(productEntry.product))  // Aseguramos que product esté accesible
+    })),
+     };
+    
     res.render("cart", { cart });
-  } catch {
+  } catch (error) {
+    logger.error("Error al obtener el carrito:", error);
     res.status(500).json({ error: "Error al obtener el carrito" });
   }
 };

@@ -5,7 +5,6 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import { engine } from 'express-handlebars';
-import Handlebars from 'handlebars'; // Importación adicional
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
@@ -28,20 +27,20 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Configuración del motor de vistas Handlebars
-app.engine(
-  'handlebars',
-  engine({
-    handlebars: Handlebars.create({
-      allowProtoPropertiesByDefault: true,
-      allowProtoMethodsByDefault: true,
-    }),
-    extname: '.handlebars',
-  })
-);
+app.engine('handlebars', engine({helpers: {
+  json: function (context) {
+    return JSON.stringify(context);
+  },
+
+}}));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
@@ -66,7 +65,7 @@ connectToDatabase(process.env.MONGO_URL);
 
 app.use('/', mainRouter);
 app.use('/api/products', productRoutes);
-app.use('/api/carts', cartRoutes);
+app.use('/api/carts', cartRoutes); 
 app.use('/api/payments', paymentRoutes);
 app.use('/session', sessionRoutes);
 app.use('/', viewsRoutes);

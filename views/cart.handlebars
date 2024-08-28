@@ -4,26 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito de Compras</title>
+  <style>
+    /* Estilos para el botón */
+    .buy-button {
+      display: inline-block;
+      background-color: #808080; /* Color gris */
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* Cambia el color al pasar el mouse */
+    .buy-button:hover {
+      background-color: #666666; /* Gris más oscuro */
+    }
+  </style>
 </head>
 <body>
+ 
   <h1>Carrito de Compras</h1>
+
   <ul>
     {{#each cart.products}}
-    <li>
-      <h2>{{this.product.title}}</h2>
-      <p>Precio: {{this.product.price}}</p>
-      <p>Cantidad: {{this.quantity}}</p>
-
-      <form action="/carts/{{../cart.id}}/product/{{this.product.id}}" method="POST">
-        <input type="hidden" name="_method" value="DELETE">
-        <button type="submit">Eliminar del Carrito</button>
-      </form>
-
-      <form action="/api/payments/create" method="POST">
-        <button type="submit">Pagar</button>
-      </form>
-    </li>
+      <li>
+        <h3>{{this.product.title}}</h3>
+        <p>{{this.product.description}}</p>
+        <p>Precio: ${{this.product.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+        <img src="{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}">
+      </li>
     {{/each}}
   </ul>
+{{cart._doc._id}}
+  <!-- Botón de Comprar -->
+  <form action="http://localhost:8080/api/carts/{{cart._doc._id}}/purchase" method="POST">
+    <button type="submit" class="buy-button">Comprar</button>
+  </form>
+
 </body>
 </html>

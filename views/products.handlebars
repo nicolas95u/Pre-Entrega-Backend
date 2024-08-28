@@ -1,15 +1,95 @@
-{{#each products.docs}}
-<li>
-  <h2>{{title}}</h2>
-  <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
-  <p>Precio: {{price}}</p>
-  <form action="/add-to-cart" method="POST">
-    <input type="hidden" name="productId" value="{{_id}}">
-    <button type="submit">Agregar al Carrito</button>
-  </form>
-  <form action="/add-to-favorites" method="POST">
-    <input type="hidden" name="productId" value="{{_id}}">
-    <button type="submit">Agregar a Favoritos</button>
-  </form>
-</li>
-{{/each}}
+<ul>
+  {{#each products.docs}}
+    <li>
+      <h2>{{title}}</h2>
+      <p>{{description}}</p>
+      <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
+      <p>Precio: {{price}}</p>
+      <form id="add-to-cart-form-{{_id}}" onsubmit="addToCart(event, '{{_id}}', 1)">
+        <button type="submit">Agregar al Carrito</button>
+      </form>
+      <form action="/add-to-favorites" method="POST">
+        <input type="hidden" name="productId" value="{{_id}}">
+        <button type="submit">Agregar a Favoritos</button>
+      </form>
+    </li>
+  {{/each}}
+</ul>
+
+<div id="cart">
+  <h2>Carrito de Compras</h2>
+  <ul id="cart-items"></ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script> 
+<script>
+  const socket = io();
+
+  function addToCart(event, productId, quantity) {
+    event.preventDefault();
+
+    fetch('/api/carts/add-to-cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: quantity
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'Producto agregado al carrito') {
+        alert('Producto agregado al carrito');
+        socket.emit('cartUpdated', data.cart); 
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  function reduceQuantity(event, productId) {
+    event.preventDefault();
+
+    fetch('/api/carts/add-to-cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: -1 // Reduce la cantidad en 1
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'Cantidad del producto actualizada') {
+        alert('Cantidad del producto reducida en 1');
+        socket.emit('cartUpdated', data.cart); 
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  socket.on('cartUpdated', (cart) => {
+    const cartItems = document.getElementById('cart-items');
+    cartItems.innerHTML = '';
+    console.log(cart)
+    cart.products.forEach(product => {
+      const listItem = document.createElement('li');
+      if (product.product) {
+        
+        listItem.textContent = `${product.product.title} - Cantidad: ${product.quantity}`;
+
+        
+        const reduceButton = document.createElement('button');
+        reduceButton.textContent = 'Reducir 1';
+        reduceButton.onclick = (event) => reduceQuantity(event,product._id);
+        listItem.appendChild(reduceButton);
+      } else {
+        listItem.textContent = `Producto no encontrado - Cantidad: ${product.quantity}`;
+      }
+      cartItems.appendChild(listItem);
+    });
+  });
+</script>
