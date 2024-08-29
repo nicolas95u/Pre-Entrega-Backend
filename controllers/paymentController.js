@@ -25,17 +25,18 @@ export const initiatePayment = async (req, res) => {
           price_data: {
             currency: currency,
             product_data: {
-              name: itemName,  // Usar el nombre del producto o los nombres concatenados
+              name: itemName,  
             },
-            unit_amount: roundedAmount,  // Usar el valor redondeado aquí
+            unit_amount: roundedAmount,  
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+      success_url: `${process.env.FRONTEND_URL}/static/payment_success.html`,
+      cancel_url: `${process.env.FRONTEND_URL}/static/payment_cancel.html`,
     });
+    
 
     res.render('stripe', {
       sessionId: session.id,

@@ -5654,3 +5654,6 @@
 {"level":"info","message":"A client disconnected"}
 {"level":"info","message":"Intentando obtener el carrito con ID: 66ca3ed2476f149c17137318"}
 {"level":"info","message":"Carrito obtenido exitosamente: {\n  _id: new ObjectId('66d08c251cdbf0e050948a5d'),\n  userId: new ObjectId('66ca3ed2476f149c17137318'),\n  products: [\n    {\n      product: [Object],\n      quantity: 1,\n      _id: new ObjectId('66d0a66bc07f2ed2dbe56990')\n    }\n  ],\n  createdAt: 2024-08-29T14:56:37.311Z,\n  updatedAt: 2024-08-29T16:48:45.200Z,\n  __v: 10\n}"}
+{"level":"info","message":"Server is starting on port 8080"}
+{"level":"info","message":"Servidor escuchando en el puerto 8080"}
+{"level":"info","message":"Connected to the database"}
