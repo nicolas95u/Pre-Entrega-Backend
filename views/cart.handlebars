@@ -4,10 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito de Compras</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1.2em;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+
+    img {
+      max-width: 100px;
+      border-radius: 5px;
+      margin-left: 20px;
+    }
+
     .buy-button {
       display: inline-block;
-      background-color: #808080;
+      background-color: #0056b3;
       color: white;
       padding: 10px 20px;
       text-align: center;
@@ -19,42 +75,87 @@
       border: none;
       cursor: pointer;
       font-size: 16px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
+
     .buy-button:hover {
-      background-color: #666666;
+      background-color: #004494;
+      transform: scale(1.05);
+    }
+
+    .total {
+      font-size: 1.2em;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 20px;
+    }
+
+    .nav-buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .nav-buttons a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      background-color: #0056b3;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #004494;
+    }
+
+    .nav-buttons a.profile-button {
+      background-color: #691ca3;
+    }
+
+    .nav-buttons a.profile-button:hover {
+      background-color: #550c8c;
     }
   </style>
 </head>
 <body>
-  <h1>Carrito de Compras</h1>
+  <div class="container">
+    <h1>Carrito de Compras</h1>
 
-  <ul>
-    {{#each cart.products}}
-      <li>
-        <h3>{{this.product.title}}</h3>
-        <p>{{this.product.description}}</p>
-        <p>Precio: ${{this.product.price}}</p>
-        <p>Cantidad: {{this.quantity}}</p>
-        <img src="{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}">
-      </li>
-    {{/each}}
-  </ul>
+    <ul>
+      {{#each cart.products}}
+        <li>
+          <div>
+            <h3>{{this.product.title}}</h3>
+            <p>{{this.product.description}}</p>
+            <p>Precio: ${{this.product.price}}</p>
+            <p>Cantidad: {{this.quantity}}</p>
+          </div>
+          <img src="{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}">
+        </li>
+      {{/each}}
+    </ul>
 
-  <!-- Mostrar el total calculado para verificar -->
-  <p>Total a pagar: ${{calculatedAmount}}</p>
+    <div class="total">
+      <p>Total a pagar: ${{calculatedAmount}}</p>
+    </div>
 
-  <!-- Formulario para iniciar el pago -->
-  <form action="/checkout" method="POST">
-    <input type="hidden" name="amount" value="{{calculatedAmount}}">
-    <input type="hidden" name="currency" value="usd">
-    <input type="hidden" name="productNames" value="{{#each cart.products}}{{this.product.title}}{{#unless @last}},{{/unless}}{{/each}}"> <!-- Enviar nombres de los productos -->
-    <button type="submit" class="buy-button">Proceder al Pago</button>
-  </form>
+    <form action="/checkout" method="POST">
+      <input type="hidden" name="amount" value="{{calculatedAmount}}">
+      <input type="hidden" name="currency" value="usd">
+      <input type="hidden" name="productNames" value="{{#each cart.products}}{{this.product.title}}{{#unless @last}},{{/unless}}{{/each}}">
+      <button type="submit" class="buy-button">Proceder al Pago</button>
+    </form>
 
-  <!-- Script para manejar la acción de retroceder en el navegador -->
+    <div class="nav-buttons">
+      <a href="/products">Volver a Productos</a>
+      <a href="/profile" class="profile-button">Ir al Perfil</a>
+    </div>
+  </div>
+
   <script>
     window.onpopstate = function(event) {
-      // Redirigir a la página de cancelación cuando el usuario presiona "atrás"
       window.location.href = '/api/carts/cancel';
     };
   </script>

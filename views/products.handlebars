@@ -1,105 +1,223 @@
-<ul>
-  {{#each products.docs}}
-    <li>
-      <h2>{{title}}</h2>
-      <p>{{description}}</p>
-      <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
-      <p>Precio: {{price}}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
 
-      <!-- Formulario para agregar al carrito -->
-      <form id="add-to-cart-form-{{_id}}" onsubmit="addToCart(event, '{{_id}}', 1)">
-        <button type="submit">Agregar al Carrito</button>
-      </form>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-      <!-- Formulario para comprar ahora con Stripe -->
-      <form action="/checkout" method="POST">
-        <input type="hidden" name="productId" value="{{_id}}">
-        <input type="hidden" name="amount" value="{{price}}">
-        <input type="hidden" name="currency" value="usd">
-        <input type="hidden" name="quantity" value="1">
-        <input type="hidden" name="productName" value="{{title}}"> <!-- Enviar el nombre del producto -->
-        <button type="submit">Comprar ahora</button>
-      </form>
-    </li>
-  {{/each}}
-</ul>
+        ul {
+            list-style-type: none;
+            padding: 0;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-<div id="cart">
-  <h2>Carrito de Compras</h2>
-  <ul id="cart-items"></ul>
-</div>
+        li {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io();
+        li:last-child {
+            border-bottom: none;
+        }
 
-  function addToCart(event, productId, quantity) {
-    event.preventDefault();
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
 
-    fetch('/api/carts/add-to-cart', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        productId: productId,
-        quantity: quantity
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.message === 'Producto agregado al carrito') {
-        alert('Producto agregado al carrito');
-        socket.emit('cartUpdated', data.cart); 
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
+        p {
+            margin: 5px 0;
+        }
 
-  function reduceQuantity(event, productId) {
-    event.preventDefault();
+        button {
+            padding: 10px 15px;
+            background-color: #004494;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+        }
 
-    fetch('/api/carts/add-to-cart', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        productId: productId,
-        quantity: -1
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.message === 'Cantidad del producto actualizada') {
-        alert('Cantidad del producto reducida en 1');
-        socket.emit('cartUpdated', data.cart); 
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
+        button:hover {
+            background-color: #3a8dbd;
+            transform: scale(1.05);
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-  socket.on('cartUpdated', (cart) => {
-    const cartItems = document.getElementById('cart-items');
-    cartItems.innerHTML = '';
-    cart.products.forEach(product => {
-      const listItem = document.createElement('li');
-      if (product.product) {
-        listItem.textContent = `${product.product.title} - Cantidad: ${product.quantity}`;
-        const reduceButton = document.createElement('button');
-        reduceButton.textContent = 'Reducir 1';
-        reduceButton.onclick = (event) => reduceQuantity(event, product._id);
-        listItem.appendChild(reduceButton);
-      } else {
-        listItem.textContent = `Producto no encontrado - Cantidad: ${product.quantity}`;
-      }
-      cartItems.appendChild(listItem);
-    });
-  });
+        #cart {
+            background-color: #e8f0fe;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
 
-  // Script para manejar la cancelación si el usuario presiona "Atrás"
-  window.onpopstate = function(event) {
-    // Redirigir a la página de cancelación cuando el usuario presiona "atrás"
-    window.location.href = '/api/carts/cancel';
-  };
-</script>
+        .nav-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .nav-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #004494;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-buttons a:hover {
+            background-color: #3a8dbd;
+        }
+
+        .nav-buttons a.profile-button {
+            background-color: #691ca3;
+        }
+
+        .nav-buttons a.profile-button:hover {
+            background-color: #550c8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Listado de Productos</h1>
+        <ul>
+            {{#each products.docs}}
+                <li>
+                    <h2>{{title}}</h2>
+                    <p>{{description}}</p>
+                    <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
+                    <p>Precio: {{price}}</p>
+
+                    <!-- Formulario para agregar al carrito -->
+                    <form id="add-to-cart-form-{{_id}}" onsubmit="addToCart(event, '{{_id}}', 1)">
+                        <button type="submit"><i class="fas fa-shopping-cart"></i> Agregar al Carrito</button>
+                    </form>
+
+                    <!-- Formulario para comprar ahora con Stripe -->
+                    <form action="/checkout" method="POST">
+                        <input type="hidden" name="productId" value="{{_id}}">
+                        <input type="hidden" name="amount" value="{{price}}">
+                        <input type="hidden" name="currency" value="usd">
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="productName" value="{{title}}"> <!-- Enviar el nombre del producto -->
+                        <button type="submit"><i class="fas fa-credit-card"></i> Comprar ahora</button>
+                    </form>
+                </li>
+            {{/each}}
+        </ul>
+
+        <div class="nav-buttons">
+            <a href="/cart"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
+            <a href="/profile" class="profile-button"><i class="fas fa-user"></i> Ir al Perfil</a>
+        </div>
+
+        <div id="cart">
+            <h2>Carrito de Compras</h2>
+            <ul id="cart-items"></ul>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function addToCart(event, productId, quantity) {
+            event.preventDefault();
+
+            fetch('/api/carts/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Producto agregado al carrito') {
+                    alert('Producto agregado al carrito');
+                    socket.emit('cartUpdated', data.cart); 
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function reduceQuantity(event, productId) {
+            event.preventDefault();
+
+            fetch('/api/carts/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: -1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Cantidad del producto actualizada') {
+                    alert('Cantidad del producto reducida en 1');
+                    socket.emit('cartUpdated', data.cart); 
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        socket.on('cartUpdated', (cart) => {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            cart.products.forEach(product => {
+                const listItem = document.createElement('li');
+                if (product.product) {
+                    listItem.textContent = `${product.product.title} - Cantidad: ${product.quantity}`;
+                    const reduceButton = document.createElement('button');
+                    reduceButton.textContent = '🗑️ Quitar del carrito';
+                    reduceButton.onclick = (event) => reduceQuantity(event, product._id);
+                    listItem.appendChild(reduceButton);
+                } else {
+                    listItem.textContent = `Producto no encontrado - Cantidad: ${product.quantity}`;
+                }
+                cartItems.appendChild(listItem);
+            });
+        });
+
+        // Script para manejar la cancelación si el usuario presiona "Atrás"
+        window.onpopstate = function(event) {
+            // Redirigir a la página de cancelación cuando el usuario presiona "atrás"
+            window.location.href = '/api/carts/cancel';
+        };
+    </script>
+</body>
+</html>

@@ -6,10 +6,10 @@
   <title>Carrito de compras</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       background-color: #f4f4f4;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
     .container {
       max-width: 800px;
@@ -20,8 +20,10 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      font-size: 24px;
+      font-size: 28px;
+      color: #333;
       margin-bottom: 20px;
+      text-align: center;
     }
     ul {
       list-style: none;
@@ -29,18 +31,78 @@
     }
     li {
       border-bottom: 1px solid #ddd;
-      padding: 10px 0;
+      padding: 15px 0;
     }
     li:last-child {
       border-bottom: none;
     }
     strong {
       font-weight: bold;
+      color: #333;
     }
     .thumbnails img {
-      max-width: 100px;
+      max-width: 80px;
       height: auto;
       margin-right: 10px;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .user-info {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .user-info p {
+      margin: 5px 0;
+      font-size: 18px;
+      color: #555;
+    }
+    .logout-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .logout-button:hover {
+      background-color: #c82333;
+    }
+    .auth-links {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .auth-links a {
+      color: #007bff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 18px;
+      transition: color 0.3s ease;
+    }
+    .auth-links a:hover {
+      color: #0056b3;
+    }
+    .actions {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .actions a {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      text-align: center;
+    }
+    .actions a:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -50,11 +112,10 @@
   <!-- Contenido para usuarios autenticados -->
   <div class="container">
     <h1>Carrito de compras</h1>
-    <div>
-      <p>Nombre: {{ user.firstName }} {{ user.lastName }}</p>
-      <p>Email: {{ user.email }}</p>
-      <p>Edad: {{ user.age }}</p>
-      <button id="logoutButton">Logout</button>
+    <div class="user-info">
+      <p><strong>Nombre:</strong> {{ user.firstName }} {{ user.lastName }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Edad:</strong> {{ user.age }}</p>
     </div>
     <ul>
       <li>
@@ -82,13 +143,22 @@
         </ul>
       </li>
     </ul>
+    <div class="actions">
+      <a href="/products">Ver Productos</a> 
+      <a href="/cart">Ver Carrito</a>
+    </div>
+    <div class="actions">
+      <button id="logoutButton" class="logout-button">Cerrar Sesión</button>
+    </div>
   </div>
   {{else}}
   <!-- Contenido para usuarios no autenticados -->
   <div class="container">
     <h1>Bienvenido</h1>
     <p>Inicia sesión o regístrate para acceder al carrito de compras y productos.</p>
-    <a href="/login">Iniciar sesión</a> | <a href="/register">Registrarse</a>
+    <div class="auth-links">
+      <a href="/login">Iniciar sesión</a> | <a href="/register">Registrarse</a>
+    </div>
   </div>
   {{/if}}
 
@@ -105,10 +175,9 @@
           window.location.href = '/login'; // Redirigir a la vista de login después del logout
         }
       })
-      .catch(error => logger.error('Error:', error));
+      .catch(error => console.error('Error:', error));
     });
   </script>
 
 </body>
 </html>
-
