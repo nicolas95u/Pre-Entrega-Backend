@@ -40,9 +40,14 @@
     {{/each}}
   </ul>
 
+  <!-- Mostrar el total calculado para verificar -->
+  <p>Total a pagar: ${{calculatedAmount}}</p>
+
+  <!-- Formulario para iniciar el pago -->
   <form action="/checkout" method="POST">
     <input type="hidden" name="amount" value="{{calculatedAmount}}">
     <input type="hidden" name="currency" value="usd">
+    <input type="hidden" name="productNames" value="{{#each cart.products}}{{this.product.title}}{{#unless @last}},{{/unless}}{{/each}}"> <!-- Enviar nombres de los productos -->
     <button type="submit" class="buy-button">Proceder al Pago</button>
   </form>
 </body>

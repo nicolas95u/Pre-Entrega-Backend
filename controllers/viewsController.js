@@ -83,16 +83,22 @@ const renderCart = async (req, res) => {
       const cartId = await cartManager.createCart(userId);
       cart = await cartManager.getCartById(cartId);
     }
-   
-   cart = {
-    ...cart[0],
-    products: cart[0].products.map(productEntry => ({
-      quantity: productEntry.quantity,  // Extraemos y mantenemos quantity
-      product: JSON.parse(JSON.stringify(productEntry.product))  // Aseguramos que product esté accesible
-    })),
-     };
+
+    // Calcular el monto total del carrito
+    const calculatedAmount = cart[0].products.reduce((total, item) => {
+      return total + (item.product.price * item.quantity);
+    }, 0);
+
+    cart = {
+      ...cart[0],
+      products: cart[0].products.map(productEntry => ({
+        quantity: productEntry.quantity,
+        product: JSON.parse(JSON.stringify(productEntry.product))
+      })),
+    };
     
-    res.render("cart", { cart });
+    // Pasar calculatedAmount a la vista junto con el carrito
+    res.render("cart", { cart, calculatedAmount });
   } catch (error) {
     logger.error("Error al obtener el carrito:", error);
     res.status(500).json({ error: "Error al obtener el carrito" });

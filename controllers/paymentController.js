@@ -3,7 +3,18 @@ import logger from '../config/logger.js';
 
 export const initiatePayment = async (req, res) => {
   try {
-    const { amount, currency } = req.body;
+    // Log the incoming request body to debug the issue
+    console.log(req.body);
+
+    const { amount, currency, productName, productNames } = req.body;
+
+    // Check if amount and currency are correctly provided
+    if (!amount || !currency) {
+      throw new Error('Amount or currency missing from request');
+    }
+
+    // Determinar el nombre del producto o productos
+    const itemName = productName || productNames;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -12,7 +23,7 @@ export const initiatePayment = async (req, res) => {
           price_data: {
             currency: currency,
             product_data: {
-              name: 'Compra en E-commerce',
+              name: itemName,  // Usar el nombre del producto o los nombres concatenados
             },
             unit_amount: amount * 100,
           },
@@ -47,6 +58,7 @@ export const handleWebhook = async (req, res) => {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
+      // Handle the successful session completion logic here
     }
 
     res.json({ received: true });

@@ -5,21 +5,21 @@
       <p>{{description}}</p>
       <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
       <p>Precio: {{price}}</p>
+
+      <!-- Add to Cart Form -->
       <form id="add-to-cart-form-{{_id}}" onsubmit="addToCart(event, '{{_id}}', 1)">
         <button type="submit">Agregar al Carrito</button>
       </form>
-      <form action="/add-to-favorites" method="POST">
-        <input type="hidden" name="productId" value="{{_id}}">
-        <button type="submit">Agregar a Favoritos</button>
-      </form>
-    <form action="/checkout" method="POST">
-  <input type="hidden" name="productId" value="{{_id}}">
-  <input type="hidden" name="amount" value="{{price}}">
-  <input type="hidden" name="currency" value="usd"> <!-- Especifica la moneda aquí -->
-  <input type="hidden" name="quantity" value="1"> <!-- Especifica la cantidad aquí -->
-  <button type="submit">Comprar ahora</button>
-</form>
 
+      <!-- Buy Now with Stripe Form -->
+      <form action="/checkout" method="POST">
+        <input type="hidden" name="productId" value="{{_id}}">
+        <input type="hidden" name="amount" value="{{price}}">
+        <input type="hidden" name="currency" value="usd">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="productName" value="{{title}}"> <!-- Enviar el nombre del producto -->
+        <button type="submit">Comprar ahora</button>
+      </form>
     </li>
   {{/each}}
 </ul>
@@ -29,7 +29,7 @@
   <ul id="cart-items"></ul>
 </div>
 
-<script src="/socket.io/socket.io.js"></script> 
+<script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io();
 
@@ -66,7 +66,7 @@
       },
       body: JSON.stringify({
         productId: productId,
-        quantity: -1 // Reduce la cantidad en 1
+        quantity: -1
       })
     })
     .then(response => response.json())
@@ -82,17 +82,13 @@
   socket.on('cartUpdated', (cart) => {
     const cartItems = document.getElementById('cart-items');
     cartItems.innerHTML = '';
-    console.log(cart)
     cart.products.forEach(product => {
       const listItem = document.createElement('li');
       if (product.product) {
-        
         listItem.textContent = `${product.product.title} - Cantidad: ${product.quantity}`;
-
-        
         const reduceButton = document.createElement('button');
         reduceButton.textContent = 'Reducir 1';
-        reduceButton.onclick = (event) => reduceQuantity(event,product._id);
+        reduceButton.onclick = (event) => reduceQuantity(event, product._id);
         listItem.appendChild(reduceButton);
       } else {
         listItem.textContent = `Producto no encontrado - Cantidad: ${product.quantity}`;
