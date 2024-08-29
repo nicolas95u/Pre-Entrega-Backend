@@ -7,14 +7,14 @@ import logger from '../config/logger.js';
 const router = express.Router();
 const cartManager = new CartManager();
 
-// Nuevas rutas para Stripe
 router.get('/success', (req, res) => { 
-  res.redirect('/static/payment_success.html'); 
+  res.sendFile(path.join(__dirname, '../static/payment_success.html')); 
 });
 
 router.get('/cancel', (req, res) => { 
-  res.redirect('/static/payment_cancel.html'); 
+  res.sendFile(path.join(__dirname, '../static/payment_cancel.html')); 
 });
+
 
 router.post('/add-to-cart', isUser, async (req, res) => {
   const { productId, quantity } = req.body;
