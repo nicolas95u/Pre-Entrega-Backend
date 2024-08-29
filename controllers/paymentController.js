@@ -3,7 +3,6 @@ import logger from '../config/logger.js';
 
 export const initiatePayment = async (req, res) => {
   try {
-    // Log the incoming request body to debug the issue
     console.log(req.body);
 
     const { amount, currency, productName, productNames } = req.body;
@@ -12,6 +11,9 @@ export const initiatePayment = async (req, res) => {
     if (!amount || !currency) {
       throw new Error('Amount or currency missing from request');
     }
+
+    // Redondear el valor de `amount` para evitar decimales
+    const roundedAmount = Math.round(amount * 100);
 
     // Determinar el nombre del producto o productos
     const itemName = productName || productNames;
@@ -25,7 +27,7 @@ export const initiatePayment = async (req, res) => {
             product_data: {
               name: itemName,  // Usar el nombre del producto o los nombres concatenados
             },
-            unit_amount: amount * 100,
+            unit_amount: roundedAmount,  // Usar el valor redondeado aquí
           },
           quantity: 1,
         },
@@ -46,6 +48,7 @@ export const initiatePayment = async (req, res) => {
   }
 };
 
+
 export const handleWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
 
@@ -56,9 +59,25 @@ export const handleWebhook = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
 
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      // Handle the successful session completion logic here
+    switch (event.type) {
+      case 'checkout.session.completed':
+        // Manejo de la finalización exitosa del pago
+        logger.info('Pago completado con éxito');
+        break;
+      
+      case 'checkout.session.expired':
+        // Lógica para manejar sesiones expiradas
+        logger.warn('La sesión de pago ha expirado');
+        break;
+        
+      case 'payment_intent.canceled':
+        // Lógica para manejar pagos cancelados
+        logger.warn('El pago ha sido cancelado');
+        break;
+
+      // Otros eventos que quieras manejar
+      default:
+        logger.info(`Unhandled event type ${event.type}`);
     }
 
     res.json({ received: true });

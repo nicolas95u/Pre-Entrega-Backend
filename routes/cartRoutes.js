@@ -7,13 +7,21 @@ import logger from '../config/logger.js';
 const router = express.Router();
 const cartManager = new CartManager();
 
+// Nuevas rutas para Stripe
+router.get('/success', (req, res) => { 
+  res.redirect('/static/payment_success.html'); 
+});
+
+router.get('/cancel', (req, res) => { 
+  res.redirect('/static/payment_cancel.html'); 
+});
+
 router.post('/add-to-cart', isUser, async (req, res) => {
   const { productId, quantity } = req.body;
   const userId = req.user._id;
 
   try {
     if (!productId || !quantity) {
-     
       throw new Error("Faltan datos en la solicitud");
     }
 
@@ -24,10 +32,8 @@ router.post('/add-to-cart', isUser, async (req, res) => {
   } catch (error) {
     logger.error('Error al agregar producto al carrito:', error);
     res.status(500).json({ message: 'Error al agregar producto al carrito', error: error.message });
-  
-}
+  }
 });
-
 
 router.get("/:cid", async (req, res) => {
   try {
@@ -69,7 +75,7 @@ router.post('/:cid/purchase', isUser, async (req, res) => {
       await cartManager.updateProductStock(item.product._id, -item.quantity);
     }
     const emptiedCart = await cartManager.emptyCart(cartId);
-    res.status(201).redirect("/profile")
+    res.status(201).redirect("/profile");
   } catch (error) {
     logger.error(error);
     res.status(500).json({ message: 'Error procesando la compra' });

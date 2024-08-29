@@ -6,12 +6,12 @@
       <p>{{#if stock}}Disponible{{else}}Sin Stock{{/if}}</p>
       <p>Precio: {{price}}</p>
 
-      <!-- Add to Cart Form -->
+      <!-- Formulario para agregar al carrito -->
       <form id="add-to-cart-form-{{_id}}" onsubmit="addToCart(event, '{{_id}}', 1)">
         <button type="submit">Agregar al Carrito</button>
       </form>
 
-      <!-- Buy Now with Stripe Form -->
+      <!-- Formulario para comprar ahora con Stripe -->
       <form action="/checkout" method="POST">
         <input type="hidden" name="productId" value="{{_id}}">
         <input type="hidden" name="amount" value="{{price}}">
@@ -96,4 +96,10 @@
       cartItems.appendChild(listItem);
     });
   });
+
+  // Script para manejar la cancelación si el usuario presiona "Atrás"
+  window.onpopstate = function(event) {
+    // Redirigir a la página de cancelación cuando el usuario presiona "atrás"
+    window.location.href = '/api/carts/cancel';
+  };
 </script>

@@ -50,5 +50,13 @@
     <input type="hidden" name="productNames" value="{{#each cart.products}}{{this.product.title}}{{#unless @last}},{{/unless}}{{/each}}"> <!-- Enviar nombres de los productos -->
     <button type="submit" class="buy-button">Proceder al Pago</button>
   </form>
+
+  <!-- Script para manejar la acción de retroceder en el navegador -->
+  <script>
+    window.onpopstate = function(event) {
+      // Redirigir a la página de cancelación cuando el usuario presiona "atrás"
+      window.location.href = '/api/carts/cancel';
+    };
+  </script>
 </body>
 </html>

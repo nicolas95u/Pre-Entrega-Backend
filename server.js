@@ -23,6 +23,12 @@ import sessionRoutes from './routes/sessionRoutes.js';
 import viewsRoutes from './routes/viewsRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { initiatePayment } from './controllers/paymentController.js';
+import path from 'path';
+import { fileURLToPath } from 'url'; // Importamos fileURLToPath para manejar __dirname
+
+// Obtener __dirname para usar en ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
@@ -63,6 +69,9 @@ app.use(passport.session());
 
 connectToDatabase(process.env.MONGO_URL);
 
+// Configuración para servir archivos estáticos
+app.use('/static', express.static(path.join(__dirname, 'static')));
+
 app.use('/', mainRouter);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes); 
@@ -70,7 +79,6 @@ app.use('/api/payments', paymentRoutes);
 app.use('/session', sessionRoutes);
 app.use('/', viewsRoutes);
 app.use('/api/users', userRoutes);
-
 
 app.post('/checkout', initiatePayment);
 
